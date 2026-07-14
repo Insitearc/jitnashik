@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Admission Form | JIT Nashik</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7a0000",
+                    },
+                    fontFamily: {
+                        body: ["Manrope", "sans-serif"],
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .form-input-focus:focus {
+            border-color: #7a0000;
+            ring-color: #7a0000;
+        }
+    </style>
+</head>
+
+<body class="bg-white font-body text-stone-800">
+    <!-- Header Placeholder -->
+    <div id="header"></div>
+
+    <main>
+        <!-- PAGE BANNER -->
+        <section class="bg-[#7a0000] py-16 text-center relative overflow-hidden">
+            <div class="max-w-screen-xl mx-auto px-6 relative z-10">
+                <h1 class="text-white text-5xl md:text-6xl font-black uppercase tracking-tight mb-4">Enrollment Portal</h1>
+                <div class="flex items-center justify-center gap-2 text-white/80 text-xs font-bold uppercase tracking-widest">
+                    <a href="index.html" class="hover:text-white transition">Home</a>
+                    <i class="fas fa-chevron-right text-[8px]"></i>
+                    <a href="admission.html" class="hover:text-white transition">Admissions</a>
+                    <i class="fas fa-chevron-right text-[8px]"></i>
+                    <span class="text-white">Application Form</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="max-w-4xl mx-auto px-6 py-20">
+            <!-- Progress Tracker -->
+            <div class="grid grid-cols-3 gap-4 mb-12">
+                <div class="relative">
+                    <div class="h-1.5 w-full bg-[#7a0000] rounded-full mb-3"></div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-[#7a0000]">Step 01</p>
+                    <p class="text-[12px] font-bold text-stone-900">Personal</p>
+                </div>
+                <div class="relative">
+                    <div class="h-1.5 w-full bg-stone-100 rounded-full mb-3"></div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-stone-400">Step 02</p>
+                    <p class="text-[12px] font-bold text-stone-400">Academic</p>
+                </div>
+                <div class="relative">
+                    <div class="h-1.5 w-full bg-stone-100 rounded-full mb-3"></div>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-stone-400">Step 03</p>
+                    <p class="text-[12px] font-bold text-stone-400">Documents</p>
+                </div>
+            </div>
+
+            <form class="space-y-12">
+                <!-- Personal Info -->
+                <div class="bg-stone-50 p-10 rounded-3xl border border-stone-100">
+                    <h3 class="text-2xl font-black text-stone-900 uppercase mb-8 flex items-center gap-4">
+                        <i class="fas fa-user text-[#7a0000]"></i>
+                        Personal Details
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-stone-500">Full Name</label>
+                            <input type="text" placeholder="As per 10th Certificate" class="w-full bg-white border-stone-200 rounded-lg px-4 py-3 text-sm focus:border-[#7a0000] focus:ring-0">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-stone-500">Email Address</label>
+                            <input type="email" placeholder="example@email.com" class="w-full bg-white border-stone-200 rounded-lg px-4 py-3 text-sm focus:border-[#7a0000] focus:ring-0">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-stone-500">Phone Number</label>
+                            <input type="tel" placeholder="+91 00000 00000" class="w-full bg-white border-stone-200 rounded-lg px-4 py-3 text-sm focus:border-[#7a0000] focus:ring-0">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-stone-500">Date of Birth</label>
+                            <input type="date" class="w-full bg-white border-stone-200 rounded-lg px-4 py-3 text-sm focus:border-[#7a0000] focus:ring-0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Info -->
+                <div class="bg-white p-10 rounded-3xl border border-stone-100 shadow-sm">
+                    <h3 class="text-2xl font-black text-stone-900 uppercase mb-8 flex items-center gap-4">
+                        <i class="fas fa-graduation-cap text-[#7a0000]"></i>
+                        Academic Records
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-stone-500">10th Percentage</label>
+                            <input type="text" placeholder="00.00 %" class="w-full bg-stone-50 border-stone-200 rounded-lg px-4 py-3 text-sm focus:border-[#7a0000] focus:ring-0">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-stone-500">12th Percentage</label>
+                            <input type="text" placeholder="00.00 %" class="w-full bg-stone-50 border-stone-200 rounded-lg px-4 py-3 text-sm focus:border-[#7a0000] focus:ring-0">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-stone-500">CET Percentile</label>
+                            <input type="text" placeholder="00.00" class="w-full bg-stone-50 border-stone-200 rounded-lg px-4 py-3 text-sm focus:border-[#7a0000] focus:ring-0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-8 border-t border-stone-100">
+                    <p class="text-xs text-stone-400 font-medium">Your data is securely stored and encrypted.</p>
+                    <div class="flex gap-4">
+                        <button type="button" class="px-8 py-3 bg-stone-100 text-stone-900 font-bold uppercase text-[10px] tracking-widest rounded-lg hover:bg-stone-200 transition-all">Save Draft</button>
+                        <button type="submit" class="px-12 py-4 bg-[#7a0000] text-white font-bold uppercase text-[10px] tracking-widest rounded-lg shadow-xl shadow-[#7a0000]/20 hover:-translate-y-1 transition-all">Next Step</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer"></div>
+
+    <script src="shared.js"></script>
+</body>
+
+</html>

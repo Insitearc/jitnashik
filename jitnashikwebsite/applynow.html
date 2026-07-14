@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JIT Admissions | Enrollment Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e9e8e7",
+                        "on-tertiary-fixed-variant": "#881f16",
+                        "background": "#fbf9f8",
+                        "tertiary": "#740f09",
+                        "secondary-fixed-dim": "#c7c6c6",
+                        "on-primary": "#ffffff",
+                        "surface": "#fbf9f8",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#410000",
+                        "outline-variant": "#e2beb9",
+                        "secondary-fixed": "#e4e2e2",
+                        "surface-container": "#efeded",
+                        "surface-container-low": "#f5f3f3",
+                        "surface-bright": "#fbf9f8",
+                        "on-secondary-container": "#646464",
+                        "on-surface": "#1b1c1c",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb4a9",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#410000",
+                        "on-background": "#1b1c1c",
+                        "inverse-primary": "#ffb4a8",
+                        "on-surface-variant": "#5a413d",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#900d07",
+                        "tertiary-fixed": "#ffdad5",
+                        "on-secondary-fixed-variant": "#464747",
+                        "primary-fixed": "#ffdad4",
+                        "surface-dim": "#dbdad9",
+                        "secondary": "#5e5e5e",
+                        "primary-container": "#9e1a10",
+                        "on-primary-container": "#ffafa2",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffaea2",
+                        "primary": "#7a0000",
+                        "tertiary-container": "#95281e",
+                        "secondary-container": "#e4e2e2",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "surface-variant": "#e4e2e2",
+                        "inverse-on-surface": "#f2f0f0",
+                        "inverse-surface": "#303031",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e4e2e2",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#b22a1d",
+                        "outline": "#8e706b",
+                        "primary-fixed-dim": "#ffb4a8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .form-input-academic {
+            background-color: #efeded;
+            border: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        .form-input-academic:focus {
+            border-bottom: 2px solid #7a0000;
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased">
+<!-- Header Placeholder -->
+<div id="header"></div>
+<main class="pt-24 pb-20 min-h-screen px-4 md:px-8">
+<div class="max-w-5xl mx-auto">
+<!-- Hero Section / Context Header -->
+<div class="mb-12 flex flex-col md:flex-row gap-8 items-end">
+<div class="flex-1">
+<span class="text-primary font-bold tracking-widest uppercase text-xs">Admission Portal 2024-25</span>
+<h1 class="font-headline text-5xl font-extrabold text-on-surface mt-2 tracking-tight leading-tight">Secure Your Academic <br/><span class="text-primary">Vanguard</span> Future.</h1>
+<p class="text-secondary mt-4 max-w-lg leading-relaxed">Join the next generation of engineers and innovators at JIT Nashik. Complete your multi-step application below to begin your journey.</p>
+</div>
+<div class="hidden md:block w-48 h-48 bg-surface-container-high rounded-xl overflow-hidden relative rotate-3">
+<img alt="Academic Building" class="w-full h-full object-cover grayscale opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEk5L57iwzdtvPq-QJz5SKVWl4yQa6eXur4g1ZkkcLlt58LqzgtT8GimT1yh6LqB2pt_MXjElZJ3P6sHLZ3mvxvj5KkTob-pmQMOt8AJzhc89_Z-GiNrxTAED7BrhibEzKUM6VGrOwibL8S39o_dp2PT_UU2Kxa3grsKOWLVgYR8r3QiqZBsf4DrwmF6_1E84FQVwL4LLF04GQ3AA6pNBTVHdsFzQeI3WZuOhSq-mkX-fZAxVJChHrkltHrTNsByssB9RoCdN4kkVB"/>
+</div>
+</div>
+<!-- Multi-Step Progress Tracker -->
+<div class="grid grid-cols-4 gap-4 mb-10">
+<div class="group">
+<div class="h-1 bg-primary w-full rounded-full mb-2"></div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-primary">Personal Details</span>
+</div>
+<div class="group">
+<div class="h-1 bg-surface-container-highest w-full rounded-full mb-2"></div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-secondary">Academic Records</span>
+</div>
+<div class="group">
+<div class="h-1 bg-surface-container-highest w-full rounded-full mb-2"></div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-secondary">Admission Info</span>
+</div>
+<div class="group">
+<div class="h-1 bg-surface-container-highest w-full rounded-full mb-2"></div>
+<span class="text-[10px] font-bold uppercase tracking-tighter text-secondary">Documentation</span>
+</div>
+</div>
+<!-- Multi-Step Form Container -->
+<form action="submit_form.php" method="POST" class="space-y-12">
+<input type="hidden" name="form_type" value="Enrollment Application">
+<!-- Section 1: Personal Details -->
+<section class="bg-surface-container-low p-8 md:p-12 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">person</span>
+<h2 class="font-headline text-2xl font-bold tracking-tight">Personal Details</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">Full Name</label>
+<input name="full_name" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="As per 10th Certificate" type="text" required/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">Email Address</label>
+<input name="email" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="example@email.com" type="email" required/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">Phone Number</label>
+<input name="phone" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="+91 00000 00000" type="tel" required/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">Religion</label>
+<select name="religion" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0">
+<option>Hindu</option>
+<option>Muslim</option>
+<option>Sikh</option>
+<option>Christian</option>
+<option>Other</option>
+</select>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">Caste Category</label>
+<select name="category" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0">
+<option>Open / General</option>
+<option>OBC</option>
+<option>SC / ST</option>
+<option>VJNT</option>
+<option>EWS</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Academic Records -->
+<section class="bg-surface-container-lowest p-8 md:p-12 rounded-xl shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">school</span>
+<h2 class="font-headline text-2xl font-bold tracking-tight">Academic Records</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">10th Percentage</label>
+<input name="ssc_percentage" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="00.00%" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">12th Percentage</label>
+<input name="hsc_percentage" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="00.00%" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">CET Score</label>
+<input name="cet_score" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="Percentile" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">JEE Score</label>
+<input name="jee_score" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="Score" type="text"/>
+</div>
+</div>
+</section>
+<!-- Section 3: Admission Details -->
+<section class="bg-surface-container-low p-8 md:p-12 rounded-xl shadow-sm">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">assignment</span>
+<h2 class="font-headline text-2xl font-bold tracking-tight">Admission Logistics</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider flex items-center gap-2">
+                                CAP ID
+                                <span class="material-symbols-outlined text-[14px] cursor-help" title="Enter your Centralized Admission Process Identification Number">help</span>
+</label>
+<input name="cap_id" class="w-full form-input-academic px-4 py-3 rounded-t-sm focus:ring-0" placeholder="EN24XXXXXX" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-wider">Admission Type</label>
+<div class="flex gap-4 mt-2">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="text-primary focus:ring-primary border-outline-variant" name="adm_type" type="radio" value="CAP Seat"/>
+<span class="text-sm font-medium group-hover:text-primary transition-colors">CAP Seat</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="text-primary focus:ring-primary border-outline-variant" name="adm_type" type="radio" value="Management Quota"/>
+<span class="text-sm font-medium group-hover:text-primary transition-colors">Management Quota</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="text-primary focus:ring-primary border-outline-variant" name="adm_type" type="radio" value="TFWS"/>
+<span class="text-sm font-medium group-hover:text-primary transition-colors">TFWS</span>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Document Upload (Bento Grid Style) -->
+<section class="bg-white p-8 md:p-12 rounded-xl shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">cloud_upload</span>
+<h2 class="font-headline text-2xl font-bold tracking-tight">Document Repository</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Card 1: Photo -->
+<div class="md:row-span-2 border-2 border-dashed border-surface-container-highest rounded-xl p-6 flex flex-col items-center justify-center text-center hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-4xl text-secondary-fixed-dim group-hover:text-primary mb-4">add_a_photo</span>
+<h3 class="text-sm font-bold uppercase tracking-widest mb-2">Passport Photo</h3>
+<p class="text-xs text-secondary leading-tight">JPG/PNG, Max 2MB. Clear white background preferred.</p>
+<input class="hidden" id="file-photo" type="file"/>
+<label class="mt-4 px-4 py-2 bg-surface-container text-[10px] font-bold rounded uppercase cursor-pointer hover:bg-primary hover:text-white transition-all" for="file-photo">Choose File</label>
+</div>
+<!-- Card 2: TC -->
+<div class="border-2 border-dashed border-surface-container-highest rounded-xl p-6 flex items-center gap-4 hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-2xl text-secondary-fixed-dim group-hover:text-primary">description</span>
+<div class="flex-1">
+<h3 class="text-xs font-bold uppercase tracking-widest">Transfer Certificate</h3>
+<p class="text-[10px] text-secondary">Original Scanned Copy</p>
+</div>
+<button class="material-symbols-outlined text-secondary-fixed-dim hover:text-primary" type="button">upload_file</button>
+</div>
+<!-- Card 3: Fee Receipt -->
+<div class="border-2 border-dashed border-surface-container-highest rounded-xl p-6 flex items-center gap-4 hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-2xl text-secondary-fixed-dim group-hover:text-primary">receipt_long</span>
+<div class="flex-1">
+<h3 class="text-xs font-bold uppercase tracking-widest">Fee Receipt</h3>
+<p class="text-[10px] text-secondary">Admission Processing Fee</p>
+</div>
+<button class="material-symbols-outlined text-secondary-fixed-dim hover:text-primary" type="button">upload_file</button>
+</div>
+<!-- Card 4: All Scorecards (Wide) -->
+<div class="md:col-span-2 border-2 border-dashed border-surface-container-highest rounded-xl p-6 flex items-center justify-between hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-3xl text-secondary-fixed-dim group-hover:text-primary">folder_zip</span>
+<div>
+<h3 class="text-sm font-bold uppercase tracking-widest">Combined Academic Scorecards</h3>
+<p class="text-[10px] text-secondary">Combine 10th, 12th, CET, and JEE into a single PDF if possible.</p>
+</div>
+</div>
+<button class="px-6 py-2 bg-primary/10 text-primary text-[10px] font-bold rounded-full uppercase hover:bg-primary hover:text-white transition-all" type="button">Attach Archive</button>
+</div>
+</div>
+</section>
+<!-- Form Actions -->
+<div class="flex flex-col md:flex-row items-center justify-between gap-6 pt-8">
+<div class="flex items-center gap-3 text-secondary text-xs italic">
+<span class="material-symbols-outlined text-sm">lock</span>
+                        All data is encrypted and handled according to JIT Privacy Policy.
+                    </div>
+<div class="flex gap-4 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-8 py-4 border border-outline text-on-surface text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-surface-container transition-all" type="button">Save Draft</button>
+<button class="flex-1 md:flex-none px-12 py-4 bg-gradient-to-br from-primary to-primary-container text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all" type="submit">Submit Application</button>
+</div>
+</div>
+</form>
+</div>
+</main>
+<!-- Footer Holder -->
+<div id="footer"></div>
+<script src="shared.js"></script>
+</body>
+</html>

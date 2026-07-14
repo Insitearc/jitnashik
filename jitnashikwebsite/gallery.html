@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Institutional Gallery | JIT Nashik</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7a0000",
+                    },
+                    fontFamily: {
+                        body: ["Manrope", "sans-serif"],
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .gallery-item {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item.hidden-item {
+            opacity: 0;
+            transform: scale(0.9);
+            display: none;
+        }
+
+        .filter-btn-active {
+            background-color: #7a0000 !important;
+            color: white !important;
+            box-shadow: 0 10px 15px -3px rgba(122, 0, 0, 0.3);
+        }
+
+        .lightbox-active {
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-white font-body text-stone-800">
+    <div id="header"></div>
+
+    <main>
+        <!-- PAGE BANNER -->
+        <section class="bg-[#7a0000] py-24 text-center relative overflow-hidden">
+            <div class="max-w-screen-xl mx-auto px-6 relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full mb-6 border border-white/20">
+                    <span class="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse"></span>
+                    <span class="text-white/80 text-[10px] font-bold uppercase tracking-widest leading-none">Photographic Archive</span>
+                </div>
+                <h1 class="text-white text-5xl md:text-7xl font-black uppercase tracking-tight mb-4">Capturing Moments</h1>
+                <p class="text-white/60 text-sm md:text-base font-medium max-w-2xl mx-auto uppercase tracking-widest italic">A visual journey through academic excellence and vibrant campus culture</p>
+            </div>
+            <!-- Decorative Elements -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48"></div>
+        </section>
+
+        <!-- GALLERY FILTER -->
+        <section class="py-10 bg-white border-b border-stone-100">
+            <div class="max-w-screen-xl mx-auto px-6 flex flex-wrap justify-center gap-3 md:gap-6">
+                <button data-filter="all"
+                    class="filter-btn px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-stone-200 transition-all filter-btn-active">All</button>
+                <button data-filter="campus"
+                    class="filter-btn px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-stone-200 transition-all hover:border-primary/40 hover:bg-stone-50 text-stone-500">Campus</button>
+                <button data-filter="laboratories"
+                    class="filter-btn px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-stone-200 transition-all hover:border-primary/40 hover:bg-stone-50 text-stone-500">Laboratories</button>
+                <button data-filter="events"
+                    class="filter-btn px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-stone-200 transition-all hover:border-primary/40 hover:bg-stone-50 text-stone-500">Events</button>
+                <button data-filter="achievements"
+                    class="filter-btn px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-stone-200 transition-all hover:border-primary/40 hover:bg-stone-50 text-stone-500">Achievements</button>
+            </div>
+        </section>
+
+        <!-- GALLERY GRID -->
+        <section class="py-20 bg-stone-50">
+            <div id="galleryGrid" class="max-w-screen-xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                <!-- Images will be injected here via JavaScript -->
+            </div>
+            
+            <!-- Dynamic Loading Skeleton (Optional) -->
+            <div id="loader" class="hidden text-center py-10">
+                <div class="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox" class="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4 md:p-10 opacity-0 invisible transition-all duration-300">
+        <button id="closeLightbox" class="absolute top-6 right-6 text-white text-3xl hover:text-primary transition-colors z-[70]">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <button id="prevBtn" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-4xl p-4 transition-all z-[70]">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <button id="nextBtn" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-4xl p-4 transition-all z-[70]">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="relative max-w-5xl w-full h-full flex flex-col items-center justify-center">
+            <img id="lightboxImg" src="" alt="Full View" class="max-w-full max-h-[85vh] object-contain shadow-2xl rounded-lg">
+            <div class="mt-4 text-center">
+                <p id="lightboxCaption" class="text-white/60 text-xs font-bold uppercase tracking-widest"></p>
+                <h4 id="lightboxTitle" class="text-white text-lg font-black uppercase mt-1"></h4>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+    <script src="shared.js"></script>
+
+    <script>
+        // Gallery Configuration
+        const galleryImages = [];
+        const categories = {
+            campus: { title: "Institutional Campus", range: [4958, 4970] },
+            laboratories: { title: "State-of-the-art Labs", range: [4971, 4985] },
+            events: { title: "Campus Events", range: [4986, 5000] },
+            achievements: { title: "Pride & Glory", range: [5001, 5007] }
+        };
+
+        // Populate gallery data
+        for (let i = 4958; i <= 5007; i++) {
+            let category = 'campus';
+            let title = categories.campus.title;
+
+            if (i >= categories.laboratories.range[0] && i <= categories.laboratories.range[1]) {
+                category = 'laboratories';
+                title = categories.laboratories.title;
+            } else if (i >= categories.events.range[0] && i <= categories.events.range[1]) {
+                category = 'events';
+                title = categories.events.title;
+            } else if (i >= categories.achievements.range[0] && i <= categories.achievements.range[1]) {
+                category = 'achievements';
+                title = categories.achievements.title;
+            }
+
+            galleryImages.push({
+                src: `assets/gallery/RP_0${i}.JPG`,
+                category: category,
+                title: `${title} - Spot ${i - 4957}`,
+                subtitle: `JIT Archives ${new Date().getFullYear()}`
+            });
+        }
+
+        const grid = document.getElementById('galleryGrid');
+        let currentLightboxIndex = 0;
+
+        // Render Gallery Items
+        function renderGallery(filter = 'all') {
+            grid.innerHTML = '';
+            const filteredImages = filter === 'all' 
+                ? galleryImages 
+                : galleryImages.filter(img => img.category === filter);
+
+            filteredImages.forEach((img, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item relative aspect-[4/5] rounded-2xl overflow-hidden shadow-lg group cursor-pointer animate-fade-in';
+                item.innerHTML = `
+                    <img src="${img.src}" alt="${img.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                        <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <p class="text-primary text-[9px] font-black uppercase tracking-tighter bg-white px-2 py-0.5 rounded inline-block mb-2">${img.category}</p>
+                            <h5 class="text-white font-extrabold uppercase text-xs tracking-wider">${img.title}</h5>
+                        </div>
+                    </div>
+                    <div class="absolute top-4 right-4 w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-expand-alt text-xs"></i>
+                    </div>
+                `;
+                item.addEventListener('click', () => openLightbox(galleryImages.indexOf(img)));
+                grid.appendChild(item);
+            });
+        }
+
+        // Filter Logic
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // UI Updates
+                filterBtns.forEach(b => {
+                    b.classList.remove('filter-btn-active');
+                    b.classList.add('text-stone-500');
+                });
+                btn.classList.add('filter-btn-active');
+                btn.classList.remove('text-stone-500');
+
+                // Filter action
+                const filter = btn.getAttribute('data-filter');
+                renderGallery(filter);
+            });
+        });
+
+        // Lightbox Logic
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+        const closeLightbox = document.getElementById('closeLightbox');
+
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            const img = galleryImages[index];
+            lightboxImg.src = img.src;
+            lightboxTitle.innerText = img.title;
+            lightboxCaption.innerText = img.subtitle;
+            
+            lightbox.classList.remove('invisible', 'opacity-0');
+            document.body.classList.add('lightbox-active');
+        }
+
+        function closeLightboxModal() {
+            lightbox.classList.add('invisible', 'opacity-0');
+            document.body.classList.remove('lightbox-active');
+        }
+
+        function navigateLightbox(step) {
+            currentLightboxIndex = (currentLightboxIndex + step + galleryImages.length) % galleryImages.length;
+            openLightbox(currentLightboxIndex);
+        }
+
+        closeLightbox.addEventListener('click', closeLightboxModal);
+        document.getElementById('prevBtn').addEventListener('click', () => navigateLightbox(-1));
+        document.getElementById('nextBtn').addEventListener('click', () => navigateLightbox(1));
+        
+        // Keyboard Support
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.classList.contains('invisible')) return;
+            if (e.key === 'Escape') closeLightboxModal();
+            if (e.key === 'ArrowLeft') navigateLightbox(-1);
+            if (e.key === 'ArrowRight') navigateLightbox(1);
+        });
+
+        // Initialize
+        renderGallery();
+    </script>
+</body>
+
+</html>

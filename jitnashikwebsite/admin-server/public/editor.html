@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIT Visual Editor</title>
+    <link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/grapesjs"></script>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; }
+        #gjs { border: none; height: 100vh; width: 100%; }
+        
+        .editor-topbar {
+            background-color: #444;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        .editor-topbar .title { font-weight: bold; }
+        .editor-topbar .actions button, .editor-topbar .actions a {
+            background-color: #7a0000;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+        .editor-topbar .actions button:hover { background-color: #5a0000; }
+        .editor-topbar .actions button:disabled { background-color: #888; cursor: not-allowed; }
+        .editor-topbar .actions a.cancel { background-color: #666; }
+        .editor-topbar .actions a.cancel:hover { background-color: #555; }
+        
+        .gjs-cv-canvas { top: 0; width: 100%; height: 100%; }
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: #fff; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 20px; font-weight: bold; color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay">Loading Editor...</div>
+
+    <div class="editor-topbar">
+        <div class="title" id="editor-title">JIT Visual Editor</div>
+        <div class="actions">
+            <span id="save-status" style="margin-right: 15px; color: #aaa; font-size: 12px; display: none;">Saving...</span>
+            <a href="/dashboard.html" class="cancel">Back to Dashboard</a>
+            <button id="save-button" onclick="saveContent()">Save Changes</button>
+        </div>
+    </div>
+    
+    <div id="gjs"></div>
+
+    <script>
+        const token = localStorage.getItem('jit_token');
+        if (!token) window.location.href = '/index.html';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const filename = urlParams.get('file');
+
+        if (!filename) {
+            alert('No file specified!');
+            window.location.href = '/dashboard.html';
+        }
+
+        document.getElementById('editor-title').textContent = `Editing: ${filename}`;
+
+        let editor;
+
+        async function initEditor() {
+            try {
+                // 1. Fetch file content
+                const response = await fetch(`/api/file/${encodeURIComponent(filename)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '/index.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to load file');
+                }
+
+                const data = await response.json();
+                const htmlContent = data.content;
+
+                // 2. Initialize GrapesJS
+                editor = grapesjs.init({
+                    container: '#gjs',
+                    height: 'calc(100vh - 50px)',
+                    width: 'auto',
+                    storageManager: false,
+                    fromElement: false,
+                    components: htmlContent,
+                    // Asset Manager: connects to our upload & listing API
+                    assetManager: {
+                        upload: '/api/upload',
+                        uploadName: 'file',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        multiUpload: false,
+                        autoAdd: true,
+                        assets: [],   // will be populated below
+                        params: {},
+                    },
+                    canvas: {
+                        styles: [
+                            'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap',
+                            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
+                        ],
+                        scripts: [
+                            'https://cdn.tailwindcss.com?plugins=forms,container-queries'
+                        ]
+                    }
+                });
+
+                // 3. Inject Tailwind Config into the canvas
+                editor.on('load', () => {
+                    const canvasFrame = editor.Canvas.getFrameEl();
+                    const tailwindScript = canvasFrame.contentDocument.createElement('script');
+                    tailwindScript.innerHTML = `
+                        tailwind.config = {
+                          darkMode: "class",
+                          theme: {
+                            extend: {
+                              colors: {
+                                "primary": "#7a0000",
+                                "primary-container": "#7a0000",
+                                "on-surface": "#1b1c1c",
+                                "surface-container-lowest": "#ffffff"
+                              },
+                              fontFamily: {
+                                "headline": ["Manrope"],
+                                "body": ["Inter"],
+                                "manrope": ["Manrope"]
+                              }
+                            }
+                          }
+                        };
+                    `;
+                    canvasFrame.contentDocument.head.appendChild(tailwindScript);
+                    document.getElementById('loading-overlay').style.display = 'none';
+
+                    // 4. Load existing assets from /api/assets into the Asset Manager
+                    fetch('/api/assets', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data && data.data) {
+                            editor.AssetManager.add(data.data);
+                        }
+                    })
+                    .catch(() => {}); // silently ignore if assets fail to load
+                });
+
+            } catch (error) {
+                console.error(error);
+                alert('Error loading editor: ' + error.message);
+                window.location.href = '/dashboard.html';
+            }
+        }
+
+        async function saveContent() {
+            if (!editor) return;
+
+            const saveBtn = document.getElementById('save-button');
+            const statusLabel = document.getElementById('save-status');
+            
+            saveBtn.disabled = true;
+            statusLabel.style.display = 'inline';
+            statusLabel.textContent = 'Saving...';
+            statusLabel.style.color = '#aaa';
+
+            const html = editor.getHtml();
+            const css = editor.getCss();
+
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ filename, html, css })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    statusLabel.textContent = 'Saved successfully!';
+                    statusLabel.style.color = '#4ade80';
+                    setTimeout(() => { statusLabel.style.display = 'none'; }, 3000);
+                } else {
+                    throw new Error(data.error || 'Failed to save');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error saving: ' + error.message);
+                statusLabel.style.display = 'none';
+            } finally {
+                saveBtn.disabled = false;
+            }
+        }
+
+        initEditor();
+    </script>
+</body>
+</html>

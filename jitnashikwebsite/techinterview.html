@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>JIT Engineering Sorting Test | JIT Nashik</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --jit-red:#8B1A1A;--jit-red2:#A52020;--jit-red3:#6B1010;
+  --gold:#C8922A;--gold-light:#e8b04a;--gold-pale:#f5e6c8;--gold-faint:rgba(200,146,42,.08);
+  --bg:#ffffff;--bg2:#faf8f6;--bg3:#f4f0ec;--bg4:#fff9f5;
+  --border:#e8ddd6;--border2:rgba(139,26,26,0.12);
+  --text:#18080a;--text2:#5c3c3c;--text3:#9a8080;
+  --red-soft:rgba(139,26,26,0.07);--red-border:rgba(139,26,26,0.18);
+  --shadow-red:0 8px 40px rgba(139,26,26,.12);
+  --shadow-sm:0 2px 12px rgba(0,0,0,.06);
+}
+html,body{background:var(--bg);font-family:'Poppins',sans-serif;min-height:100vh;color:var(--text)}
+
+/* ══ HEADER ══ */
+.jit-header{
+  background:#fff;border-bottom:3px solid var(--jit-red);
+  padding:0 16px;display:flex;align-items:center;gap:12px;height:72px;
+  box-shadow:0 2px 16px rgba(139,26,26,.1);position:sticky;top:0;z-index:100
+}
+.jit-logo-img{
+  height:56px;width:auto;max-width:380px;
+  object-fit:contain;object-position:left center;
+  flex-shrink:0;
+}
+.jit-header-divider{width:1px;height:38px;background:var(--border);flex-shrink:0;margin:0 4px}
+.jit-htext{flex:1;min-width:0}
+.jit-htext h2{font-size:.67rem;font-weight:600;color:var(--jit-red);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jit-htext p{font-size:.56rem;color:var(--text3);margin-top:1px;font-weight:400}
+.jit-badge{margin-left:auto;background:var(--jit-red);color:#fff;border-radius:4px;padding:3px 11px;font-size:.58rem;font-weight:700;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
+.admin-link{color:var(--jit-red);font-size:.6rem;font-weight:600;text-decoration:none;padding:4px 10px;border:1px solid var(--red-border);border-radius:4px;margin-left:8px;white-space:nowrap;flex-shrink:0}
+.admin-link:hover{background:var(--red-soft)}
+@media(max-width:600px){
+  .jit-htext{display:none}
+  .jit-logo-img{height:44px;max-width:220px}
+  .jit-badge{font-size:.52rem;padding:3px 8px}
+}
+
+/* ══ ANIMATIONS ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes hatBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-13px) rotate(2deg)}}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+@keyframes flicker{0%,100%{opacity:1}42%{opacity:.55}50%{opacity:.9}57%{opacity:.45}65%{opacity:1}}
+@keyframes candleFlame{0%,100%{transform:scaleX(1) scaleY(1)}33%{transform:scaleX(.88) scaleY(1.12) translateX(-1px)}66%{transform:scaleX(1.12) scaleY(.92) translateX(1px)}}
+@keyframes glowPulseLight{0%,100%{opacity:1}50%{opacity:.7}}
+@keyframes barFill{from{width:0}to{width:var(--w)}}
+@keyframes tickIn{from{opacity:0;transform:scale(0) rotate(-90deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}
+@keyframes fadeSlideLeft{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes hatSpeak{0%{transform:rotate(-4deg) scaleY(1)}25%{transform:rotate(4deg) scaleY(1.06)}50%{transform:rotate(-2deg) scaleY(.97)}75%{transform:rotate(3deg) scaleY(1.04)}100%{transform:rotate(0deg) scaleY(1)}}
+@keyframes shimmerRedGold{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes emojiPop{0%{transform:scale(0.5);opacity:0}65%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes starDrift{0%,100%{transform:translateY(0) scale(1);opacity:.6}50%{transform:translateY(-8px) scale(1.1);opacity:1}}
+@keyframes rotateSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes rotateSlowRev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes pulseRing{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.06);opacity:.7}}
+@keyframes scanLine{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
+@keyframes glitchSlide{0%,100%{clip-path:inset(0 0 95% 0)}20%{clip-path:inset(20% 0 60% 0)}40%{clip-path:inset(50% 0 30% 0)}60%{clip-path:inset(70% 0 10% 0)}80%{clip-path:inset(10% 0 80% 0)}}
+@keyframes hexFloat{0%,100%{transform:translateY(0) rotate(0deg);opacity:.06}50%{transform:translateY(-15px) rotate(5deg);opacity:.12}}
+@keyframes particleDrift{0%{transform:translateY(0) translateX(0) scale(1);opacity:.5}33%{transform:translateY(-30px) translateX(15px) scale(1.2);opacity:.8}66%{transform:translateY(10px) translateX(-10px) scale(.8);opacity:.4}100%{transform:translateY(0) translateX(0) scale(1);opacity:.5}}
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes revealUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes borderDraw{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+
+/* ══ COMMON ══ */
+.screen{animation:fadeUp .42s cubic-bezier(.25,.46,.45,.94) both}
+
+/* ══ REGISTER ══ */
+.login-wrap{max-width:480px;margin:0 auto;padding:3rem 1.4rem;text-align:center}
+.login-hat{animation:hatBob 4s ease-in-out infinite;display:inline-block;margin-bottom:.8rem}
+.login-eye{font-size:.6rem;letter-spacing:3.5px;color:var(--jit-red);font-weight:700;text-transform:uppercase;margin-bottom:.4rem}
+.login-title{font-family:'Poppins',sans-serif;font-size:clamp(1.2rem,4.5vw,1.7rem);font-weight:700;color:var(--jit-red);line-height:1.3;margin-bottom:.3rem}
+.login-rule{width:48px;height:3px;background:linear-gradient(90deg,var(--jit-red),var(--gold));margin:.6rem auto 1rem;border-radius:2px}
+.login-sub{font-size:.82rem;color:var(--text3);margin-bottom:1.8rem;font-weight:400}
+.login-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.8rem 1.6rem;text-align:left}
+.form-group{margin-bottom:1.1rem}
+.form-label{display:block;font-size:.72rem;font-weight:600;color:var(--text2);margin-bottom:.4rem;letter-spacing:.3px}
+.form-label span{color:var(--jit-red)}
+.form-input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Poppins',sans-serif;font-size:.84rem;color:var(--text);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none}
+.form-input:focus{border-color:var(--jit-red);box-shadow:0 0 0 3px rgba(139,26,26,.08)}
+.form-input::placeholder{color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:420px){.form-row{grid-template-columns:1fr}}
+.form-error{font-size:.7rem;color:var(--jit-red);margin-top:.3rem;display:none}
+.form-error.show{display:block}
+.submit-btn{width:100%;background:var(--jit-red);color:#fff;border:none;border-radius:9px;padding:13px 24px;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .22s;box-shadow:0 4px 18px rgba(139,26,26,.3);margin-top:.5rem}
+.submit-btn:hover{background:var(--jit-red2);transform:translateY(-2px);box-shadow:0 6px 22px rgba(139,26,26,.4)}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.privacy-note{font-size:.65rem;color:var(--text3);text-align:center;margin-top:.9rem;line-height:1.6}
+
+/* ══ QUIZ ══ */
+.quiz-wrap{max-width:610px;margin:0 auto;padding:1.8rem 1.4rem 3rem}
+.intro-wrap{max-width:570px;margin:0 auto;padding:2.5rem 1.4rem 3rem;text-align:center}
+.phase-pill{display:inline-flex;align-items:center;gap:6px;background:var(--red-soft);border:1px solid var(--red-border);border-radius:30px;padding:5px 16px;font-size:.62rem;color:var(--jit-red);font-weight:700;letter-spacing:1.2px;margin-bottom:1.1rem;text-transform:uppercase}
+.progress-wrap{margin-bottom:1.2rem}
+.prog-top{display:flex;justify-content:space-between;margin-bottom:6px}
+.prog-lbl{font-size:.64rem;color:var(--text3);font-weight:500}
+.prog-num{font-size:.64rem;color:var(--jit-red);font-weight:700}
+.prog-bar{background:var(--bg3);border-radius:8px;height:6px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--jit-red),var(--gold));border-radius:8px;transition:width .55s ease}
+.q-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:1.5rem 1.7rem;margin-bottom:1.1rem;box-shadow:var(--shadow-sm)}
+.q-num{font-size:.58rem;color:var(--jit-red);font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:.55rem}
+.q-text{font-size:clamp(.92rem,3vw,1.08rem);color:var(--text);line-height:1.75;font-weight:500}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.3rem}
+@media(max-width:450px){.opts{grid-template-columns:1fr}}
+.opt{background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:13px;color:var(--text);cursor:pointer;text-align:left;font-family:'Poppins',sans-serif;font-size:.79rem;line-height:1.5;transition:all .22s;display:flex;flex-direction:column;gap:4px;position:relative;overflow:hidden}
+.opt::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,26,26,.06),transparent);opacity:0;transition:opacity .2s}
+.opt:hover{border-color:var(--jit-red);background:var(--red-soft);transform:translateY(-2px);box-shadow:0 5px 16px rgba(139,26,26,.12)}
+.opt:hover::before,.opt.sel::before{opacity:1}
+.opt.sel{border-color:var(--jit-red);background:var(--red-soft);box-shadow:0 0 0 2px rgba(139,26,26,.14)}
+.opt-icon{font-size:1.3rem}
+.opt-lbl{font-size:.57rem;font-weight:700;letter-spacing:1.8px;color:var(--jit-red);text-transform:uppercase}
+.nxt-btn{width:100%;background:var(--jit-red);color:#fff;border:none;border-radius:9px;padding:13px 24px;font-family:'Poppins',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;letter-spacing:.8px;transition:all .22s;opacity:0;pointer-events:none;box-shadow:0 4px 18px rgba(139,26,26,.32)}
+.nxt-btn.show{opacity:1;pointer-events:auto}
+.nxt-btn:hover{background:var(--jit-red2);transform:translateY(-2px)}
+.student-bar{background:var(--red-soft);border:1px solid var(--red-border);border-radius:8px;padding:.55rem 1rem;margin-bottom:1rem;display:flex;align-items:center;gap:8px;font-size:.7rem;color:var(--text2);font-weight:500}
+.student-bar strong{color:var(--jit-red)}
+.hat-anim{animation:hatBob 4s ease-in-out infinite;display:inline-block;margin-bottom:.9rem}
+.intro-eye{font-size:.6rem;letter-spacing:3.5px;color:var(--jit-red);font-weight:700;text-transform:uppercase;margin-bottom:.55rem}
+.intro-title{font-size:clamp(1.3rem,5vw,2rem);font-weight:700;color:var(--jit-red);line-height:1.3;margin-bottom:.4rem}
+.intro-rule{width:52px;height:3px;background:linear-gradient(90deg,var(--jit-red),var(--gold));margin:.75rem auto;border-radius:2px}
+.intro-sub{font-size:.86rem;color:var(--text3);margin-bottom:1.5rem}
+.intro-card{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:1.3rem 1.6rem;margin-bottom:1.5rem;text-align:left}
+.intro-card p{color:var(--text2);font-size:.84rem;line-height:1.9}
+.intro-card p strong{color:var(--jit-red);font-weight:600}
+.begin-btn{background:var(--jit-red);color:#fff;border:none;border-radius:9px;padding:14px 48px;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;letter-spacing:.8px;transition:all .22s;box-shadow:0 5px 20px rgba(139,26,26,.35)}
+.begin-btn:hover{background:var(--jit-red2);transform:translateY(-2px)}
+.branch-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:1.8rem}
+.chip{background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:5px 13px;font-size:.68rem;color:var(--text2);display:flex;align-items:center;gap:5px;font-weight:500}
+
+/* ══ SORTING SCREEN ══ */
+.sort-screen{min-height:calc(100vh - 72px);display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(170deg,#0c0603 0%,#180a04 45%,#080302 100%);position:relative;overflow:hidden;padding:2rem}
+.candle{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center}
+.candle-flame{width:9px;height:15px;background:radial-gradient(ellipse at 50% 85%,#fff 0%,#ffe066 25%,#f5a623 55%,rgba(245,100,20,.3) 80%,transparent 100%);border-radius:50% 50% 30% 30%;animation:candleFlame 1.4s ease-in-out infinite;transform-origin:bottom center;filter:blur(.3px)}
+.candle-wax{width:9px;background:linear-gradient(180deg,#f5e6c8 0%,#e8d0a0 100%);border-radius:2px 2px 0 0}
+.sort-title{font-weight:700;color:var(--gold-light);font-size:clamp(1rem,4vw,1.45rem);text-align:center;animation:glowPulseLight 2.5s infinite;margin:.5rem 0 .2rem;position:relative;z-index:2}
+.sort-sub{color:rgba(245,230,200,.4);font-size:.8rem;text-align:center;position:relative;z-index:2;font-weight:300}
+.sort-spin{width:50px;height:50px;border-radius:50%;border:2px solid rgba(200,146,42,.15);border-top-color:var(--gold);animation:spinRing 1s linear infinite;margin:.8rem auto;position:relative;z-index:2}
+.sort-msg{color:var(--gold-pale);font-size:.84rem;text-align:center;animation:flicker 3s ease-in-out infinite;position:relative;z-index:2;margin-top:.3rem}
+
+/* ══════════════════════════════════════════════════════
+   RESULT PAGE — PREMIUM LIGHT TECHNICAL THEME
+══════════════════════════════════════════════════════ */
+
+/* Main background — layered gradient with mesh */
+.result-outer{
+  min-height:calc(100vh - 72px);
+  background:
+    linear-gradient(135deg, #fff8f5 0%, #fffcfa 25%, #faf5f0 50%, #fff9f6 75%, #fdf8f3 100%);
+  background-size:400% 400%;
+  animation:gradientShift 12s ease infinite;
+  position:relative;overflow:hidden;
+}
+
+/* Geometric grid overlay */
+.result-outer::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(139,26,26,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,26,26,.028) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* Decorative radial glows */
+.result-outer::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 40% at 10% 15%, rgba(139,26,26,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 80%, rgba(200,146,42,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 25% at 80% 10%, rgba(139,26,26,.04) 0%, transparent 50%);
+}
+
+/* Floating hex decorations */
+.r-hex-bg{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;
+}
+.r-hex{
+  position:absolute;
+  opacity:.055;
+}
+.r-hex svg{fill:none;stroke:var(--jit-red);}
+
+/* Scan line effect */
+.r-scanline{
+  position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;
+}
+.r-scanline::after{
+  content:'';position:absolute;width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(200,146,42,.12),transparent);
+  animation:scanLine 8s linear infinite;
+  top:0;left:0;
+}
+
+.result-scroll{
+  position:relative;z-index:2;
+  max-width:680px;margin:0 auto;
+  padding:2.8rem 1.4rem 4rem;
+}
+
+/* ── Proclamation ── */
+.r-proclamation{
+  text-align:center;margin-bottom:2rem;
+  animation:revealUp .6s ease both;
+}
+.r-proc-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,rgba(139,26,26,.08),rgba(200,146,42,.06));
+  border:1px solid rgba(139,26,26,.2);
+  border-radius:30px;padding:6px 20px;
+  font-size:.58rem;color:var(--jit-red);font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;
+  box-shadow:0 2px 12px rgba(139,26,26,.08);
+}
+.r-proc-eyebrow::before,.r-proc-eyebrow::after{
+  content:'◆';font-size:.4rem;color:var(--gold);opacity:.7;
+}
+.r-proc-title{
+  font-family:'Playfair Display',serif;font-weight:900;
+  font-size:clamp(1.6rem,5vw,2.4rem);
+  background:linear-gradient(135deg,var(--jit-red) 0%,#9B2020 30%,var(--gold) 60%,#C8922A 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmerRedGold 6s linear infinite;
+  line-height:1.2;margin-bottom:.4rem;
+}
+.r-proc-sub{
+  font-size:.8rem;color:var(--text3);font-weight:300;letter-spacing:.5px;
+}
+.r-proc-ornament{
+  display:flex;align-items:center;gap:12px;justify-content:center;margin-top:1rem;
+}
+.r-proc-line{flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));opacity:.5}
+.r-proc-diamond{width:8px;height:8px;background:var(--gold);transform:rotate(45deg);opacity:.6}
+
+/* ── Hero card — premium glass-morphism light ── */
+.r-hero-card{
+  background:linear-gradient(145deg,#ffffff 0%,#fffbf8 50%,#fff8f3 100%);
+  border:1px solid rgba(200,146,42,.25);
+  border-top:none;
+  border-radius:20px;
+  padding:0;
+  margin-bottom:1.4rem;
+  position:relative;
+  overflow:hidden;
+  box-shadow:
+    0 1px 0 0 var(--gold) inset,
+    0 4px 0 0 var(--jit-red),
+    0 20px 60px rgba(139,26,26,.12),
+    0 4px 20px rgba(0,0,0,.06);
+  animation:revealUp .7s .1s ease both;
+}
+
+/* Animated top accent bar */
+.r-hero-top-bar{
+  height:4px;
+  background:linear-gradient(90deg,var(--jit-red),var(--gold),var(--jit-red));
+  background-size:200% auto;
+  animation:shimmerRedGold 3s linear infinite;
+}
+
+/* Circuit pattern overlay on hero card */
+.r-hero-circuit{
+  position:absolute;top:0;right:0;width:180px;height:180px;opacity:.04;pointer-events:none;
+}
+
+.r-hero-inner{padding:2.2rem 2rem 1.8rem;text-align:center;position:relative}
+
+/* Corner ornaments */
+.r-corner{position:absolute;width:22px;height:22px;border-color:rgba(200,146,42,.6);border-style:solid}
+.r-corner.tl{top:16px;left:16px;border-width:2px 0 0 2px;border-radius:3px 0 0 0}
+.r-corner.tr{top:16px;right:16px;border-width:2px 2px 0 0;border-radius:0 3px 0 0}
+.r-corner.bl{bottom:16px;left:16px;border-width:0 0 2px 2px;border-radius:0 0 0 3px}
+.r-corner.br{bottom:16px;right:16px;border-width:0 2px 2px 0;border-radius:0 0 3px 0}
+
+/* Emoji with spinning rings */
+.r-emoji-wrap{
+  position:relative;display:inline-block;
+  margin-bottom:1.2rem;
+  animation:floatUp 4s ease-in-out infinite;
+}
+.r-emoji-ring-outer{
+  position:absolute;inset:-22px;border-radius:50%;
+  border:1px dashed rgba(200,146,42,.3);
+  animation:rotateSlow 12s linear infinite;
+}
+.r-emoji-ring-outer::before{
+  content:'◆';position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+  font-size:.5rem;color:var(--gold);opacity:.7;
+}
+.r-emoji-ring-mid{
+  position:absolute;inset:-14px;border-radius:50%;
+  border:1.5px solid rgba(200,146,42,.25);
+  animation:rotateSlowRev 8s linear infinite;
+}
+.r-emoji-ring-inner{
+  position:absolute;inset:-6px;border-radius:50%;
+  border:2px solid rgba(139,26,26,.15);
+  animation:pulseRing 2s ease-in-out infinite;
+}
+.r-emoji-bg{
+  width:90px;height:90px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(139,26,26,.06),rgba(200,146,42,.08));
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(200,146,42,.2);
+  box-shadow:0 4px 24px rgba(139,26,26,.1),inset 0 1px 0 rgba(255,255,255,.8);
+}
+.r-branch-emoji{
+  font-size:3.5rem;display:block;
+  animation:emojiPop .7s cubic-bezier(.34,1.56,.64,1) .2s both;
+  filter:drop-shadow(0 4px 12px rgba(139,26,26,.2));
+}
+.r-branch-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,4.5vw,1.9rem);font-weight:900;
+  background:linear-gradient(135deg,var(--jit-red) 0%,#8B1A1A 25%,var(--gold) 55%,#A0701A 80%,var(--jit-red) 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmerRedGold 5s linear infinite;
+  line-height:1.2;margin-bottom:.7rem;
+}
+.r-branch-tagline{
+  font-size:.84rem;color:var(--text2);
+  line-height:1.8;margin-bottom:1.4rem;
+  font-style:italic;font-weight:400;
+  position:relative;padding:1rem 1.2rem;
+  background:linear-gradient(135deg,rgba(139,26,26,.04),rgba(200,146,42,.04));
+  border-radius:10px;border:1px solid rgba(200,146,42,.15);
+  text-align:left;
+}
+.r-branch-tagline::before{
+  content:'"\2019';
+  font-family:'Playfair Display',serif;
+  font-size:3rem;line-height:1;
+  color:rgba(200,146,42,.25);
+  position:absolute;top:-8px;left:8px;
+}
+.r-trait-row{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:.5rem}
+.r-trait{
+  background:linear-gradient(135deg,rgba(139,26,26,.07),rgba(200,146,42,.05));
+  border:1px solid rgba(139,26,26,.2);
+  color:var(--jit-red);border-radius:30px;
+  padding:5px 16px;font-size:.62rem;font-weight:700;letter-spacing:.8px;
+  position:relative;overflow:hidden;
+}
+.r-trait::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(200,146,42,.06),transparent);
+  animation:shimmerRedGold 3s linear infinite;
+}
+
+/* ── Section cards — technical panel style ── */
+.r-card{
+  background:#fff;
+  border:1px solid rgba(200,146,42,.15);
+  border-radius:16px;padding:1.6rem 1.8rem;
+  margin-bottom:1.2rem;
+  box-shadow:0 2px 16px rgba(139,26,26,.05),0 1px 0 rgba(200,146,42,.1) inset;
+  position:relative;overflow:hidden;
+  animation:revealUp .6s ease both;
+}
+/* Left accent stripe with gradient */
+.r-card::before{
+  content:'';position:absolute;top:0;left:0;width:4px;bottom:0;
+  background:linear-gradient(180deg,var(--jit-red) 0%,var(--gold) 50%,var(--jit-red) 100%);
+  border-radius:16px 0 0 16px;
+}
+/* Top micro-line */
+.r-card::after{
+  content:'';position:absolute;top:0;left:4px;right:0;height:1px;
+  background:linear-gradient(90deg,rgba(200,146,42,.3),transparent);
+}
+
+.r-section-title{
+  font-size:.58rem;font-weight:700;color:var(--jit-red);
+  letter-spacing:2.5px;text-transform:uppercase;
+  margin-bottom:1.2rem;padding-left:.3rem;
+  display:flex;align-items:center;gap:10px;
+}
+.r-section-title .r-stitle-icon{
+  width:18px;height:18px;border-radius:4px;
+  background:var(--jit-red);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.55rem;flex-shrink:0;
+}
+.r-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(139,26,26,.2),transparent)}
+
+/* ── Highlight items ── */
+.r-choice-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:.8rem 0;
+  border-bottom:1px solid rgba(200,146,42,.08);
+  animation:fadeSlideLeft .5s ease both;
+}
+.r-choice-item:last-child{border-bottom:none;padding-bottom:0}
+.r-choice-tick{
+  width:24px;height:24px;border-radius:6px;
+  background:linear-gradient(135deg,var(--jit-red),var(--jit-red2));
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+  animation:tickIn .4s ease both;
+  box-shadow:0 2px 8px rgba(139,26,26,.25);
+}
+.r-choice-tick svg{width:12px;height:12px;stroke:#fff;stroke-width:2.5;fill:none}
+.r-choice-q{font-size:.62rem;color:var(--text3);font-weight:400;margin-bottom:3px;line-height:1.4}
+.r-choice-a{font-size:.8rem;color:var(--text);font-weight:600;line-height:1.45}
+
+/* ── DNA bars — technical style ── */
+.r-dna-row{margin-bottom:14px;padding:10px 12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)}
+.r-dna-row:last-child{margin-bottom:0}
+.r-dna-row.winner{background:linear-gradient(135deg,rgba(139,26,26,.05),rgba(200,146,42,.06));border-color:rgba(200,146,42,.25)}
+.r-dna-lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.r-dna-branch{display:flex;align-items:center;gap:8px;font-size:.73rem;color:var(--text2);font-weight:500}
+.r-dna-branch.top-match{color:var(--jit-red);font-weight:700}
+.r-dna-pct{font-size:.73rem;color:var(--text3);font-weight:700;font-family:monospace}
+.r-dna-pct.top-match{color:var(--jit-red);font-size:.82rem}
+.r-dna-track{background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;position:relative}
+.r-dna-track::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 8px,rgba(255,255,255,.4) 8px,rgba(255,255,255,.4) 9px)}
+.r-dna-fill{height:100%;border-radius:6px;animation:barFill 1.8s cubic-bezier(.25,.46,.45,.94) both;position:relative}
+.r-dna-fill::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:rgba(255,255,255,.25);border-radius:6px 6px 0 0}
+.r-dna-row.winner .r-dna-track{height:10px}
+.r-dna-row.winner .r-dna-fill{height:10px}
+.r-winner-crown{font-size:.75rem;margin-left:4px}
+.r-winner-badge{
+  font-size:.5rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--gold),#b07020);color:#fff;
+  padding:2px 8px;border-radius:10px;margin-left:6px;
+}
+
+/* ── Description ── */
+.r-desc-text{color:var(--text2);font-size:.85rem;line-height:2;font-weight:400}
+
+/* ── CTA — premium card ── */
+.r-cta{
+  position:relative;border-radius:20px;
+  padding:2.2rem 2rem;
+  margin-bottom:1.6rem;overflow:hidden;
+  background:linear-gradient(135deg,var(--jit-red3) 0%,var(--jit-red) 40%,#9B2020 70%,var(--jit-red3) 100%);
+  background-size:200% 200%;
+  animation:gradientShift 6s ease infinite;
+  box-shadow:0 12px 40px rgba(139,26,26,.35),0 4px 16px rgba(0,0,0,.1);
+}
+/* Geometric overlay */
+.r-cta::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+/* Gold shimmer overlay */
+.r-cta::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(200,146,42,.8),rgba(255,220,120,.9),rgba(200,146,42,.8),transparent);
+  animation:shimmerRedGold 3s linear infinite;
+}
+.r-cta-inner{position:relative;z-index:1;text-align:center}
+.r-ct-eyebrow{font-size:.56rem;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.r-ct-eyebrow::before,.r-ct-eyebrow::after{content:'★';color:rgba(200,146,42,.7);font-size:.5rem}
+.r-ct-name{font-family:'Playfair Display',serif;font-size:clamp(.95rem,2.8vw,1.2rem);color:#fff;font-weight:700;line-height:1.5;margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.r-ct-divider{
+  width:60px;height:2px;margin:1rem auto;
+  background:linear-gradient(90deg,transparent,rgba(200,146,42,.8),transparent);
+}
+.r-ct-addr{color:rgba(255,255,255,.6);font-size:.7rem;margin-top:6px;line-height:2;font-weight:300}
+.r-ct-phone{color:rgba(255,255,255,.65);font-size:.7rem;margin-top:4px;letter-spacing:.3px}
+.r-ct-badges{display:flex;gap:8px;justify-content:center;margin-top:1.2rem;flex-wrap:wrap}
+.r-ct-badge{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  border-radius:6px;padding:4px 12px;font-size:.56rem;color:rgba(255,255,255,.7);
+  font-weight:600;letter-spacing:.5px;
+}
+
+/* ── Buttons ── */
+.r-btn-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.r-btn-primary{
+  background:linear-gradient(135deg,var(--jit-red),var(--jit-red2));
+  color:#fff;border:none;border-radius:10px;padding:14px 36px;
+  font-family:'Poppins',sans-serif;font-size:.84rem;font-weight:700;
+  cursor:pointer;letter-spacing:.5px;transition:all .25s;
+  box-shadow:0 6px 24px rgba(139,26,26,.35);position:relative;overflow:hidden;
+}
+.r-btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);animation:shimmerRedGold 2s linear infinite}
+.r-btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(139,26,26,.45)}
+.r-btn-outline{
+  background:transparent;
+  border:2px solid rgba(139,26,26,.25);
+  color:var(--jit-red);border-radius:10px;padding:13px 36px;
+  font-family:'Poppins',sans-serif;font-size:.84rem;font-weight:600;
+  cursor:pointer;letter-spacing:.5px;transition:all .25s;
+}
+.r-btn-outline:hover{background:var(--red-soft);border-color:var(--jit-red);transform:translateY(-3px)}
+
+/* ══ TOAST ══ */
+.sync-toast{position:fixed;bottom:24px;right:20px;background:#1a1a1a;color:#fff;border-radius:10px;padding:10px 16px;font-size:.72rem;display:flex;align-items:center;gap:8px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.35);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.25,.46,.45,.94)}
+.sync-toast.show{transform:translateY(0);opacity:1}
+.sync-toast.ok{border-left:3px solid #22c55e}
+.sync-toast.err{border-left:3px solid #ef4444}
+.sync-toast.info{border-left:3px solid var(--gold)}
+
+/* ══ ADMIN LOGIN ══ */
+.admin-login-wrap{max-width:420px;margin:4rem auto;padding:0 1.4rem;text-align:center}
+.admin-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:2rem 1.8rem}
+.admin-title{font-size:1.2rem;font-weight:700;color:var(--jit-red);margin-bottom:.3rem}
+.admin-sub{font-size:.78rem;color:var(--text3);margin-bottom:1.5rem}
+.admin-err{font-size:.72rem;color:var(--jit-red);margin-top:.5rem;display:none}
+.admin-err.show{display:block}
+
+/* ══ ADMIN PANEL ══ */
+.admin-panel{max-width:1100px;margin:0 auto;padding:1.5rem 1.2rem 3rem}
+.admin-header-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.5rem}
+.admin-panel-title{font-size:1.1rem;font-weight:700;color:var(--jit-red)}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-export{background:var(--jit-red);color:#fff;border:none;border-radius:7px;padding:8px 18px;font-family:'Poppins',sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-export:hover{background:var(--jit-red2);transform:translateY(-1px)}
+.btn-logout{background:transparent;color:var(--text3);border:1px solid var(--border);border-radius:7px;padding:8px 14px;font-family:'Poppins',sans-serif;font-size:.74rem;cursor:pointer}
+.btn-refresh{background:transparent;color:var(--jit-red);border:1px solid var(--red-border);border-radius:7px;padding:8px 14px;font-family:'Poppins',sans-serif;font-size:.74rem;cursor:pointer;font-weight:600;transition:all .2s}
+.btn-refresh:hover{background:var(--red-soft)}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;text-align:center}
+.stat-num{font-size:1.6rem;font-weight:700;color:var(--jit-red);line-height:1}
+.stat-lbl{font-size:.65rem;color:var(--text3);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.8px}
+.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.76rem;min-width:700px}
+thead tr{background:var(--jit-red);color:#fff}
+thead th{padding:.7rem 1rem;text-align:left;font-weight:600;font-size:.68rem;letter-spacing:.8px;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--bg2)}
+tbody td{padding:.65rem 1rem;color:var(--text2);vertical-align:middle}
+.branch-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:600;background:var(--red-soft);color:var(--jit-red);border:1px solid var(--red-border)}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text3);font-size:.84rem}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:.7rem;display:block}
+.search-bar{width:100%;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Poppins',sans-serif;font-size:.82rem;margin-bottom:1rem;outline:none;transition:border-color .2s}
+.search-bar:focus{border-color:var(--jit-red);box-shadow:0 0 0 3px rgba(139,26,26,.07)}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.filter-btn{padding:5px 14px;border:1px solid var(--border);border-radius:20px;font-size:.68rem;cursor:pointer;background:#fff;color:var(--text2);font-family:'Poppins',sans-serif;font-weight:500;transition:all .2s}
+.filter-btn.active{background:var(--jit-red);color:#fff;border-color:var(--jit-red)}
+.serial-num{color:var(--text3);font-size:.68rem;font-weight:600}
+.gs-info{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:.7rem 1rem;font-size:.72rem;color:#92400e;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+
+/* FOOTER */
+.jit-footer{background:var(--bg2);border-top:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.jit-footer span{color:var(--text3);font-size:.62rem}
+.jit-footer a{color:var(--jit-red);font-size:.62rem;text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<header class="jit-header">
+  <img src="assets/jit123.png" alt="JIT Logo" class="jit-logo-img">
+  <div class="jit-badge">Admissions 2025–26</div>
+  <a href="#" class="admin-link" onclick="goAdmin();return false">⚙ Admin</a>
+</header>
+
+<div id="app"><div id="root"></div></div>
+<div class="sync-toast" id="syncToast"></div>
+
+<footer class="jit-footer">
+  <span>© 2025 JIT Nashik · Survey No. 48, Near Gangapur Dam, Nashik 422 222</span>
+  <a href="https://jitnashik.edu.in" target="_blank">jitnashik.edu.in ↗</a>
+</footer>
+
+<script>
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwCIUeSlv7PqnTWRHJzgNZJ6eqb0A2tDB9t0ZEZqTWHWh5U0TWqtdSPJ75w-P8jksAW1g/exec';
+const ADMIN_USER = 'jitadmin';
+const ADMIN_PASS = 'JIT@2025';
+const LOCAL_KEY  = 'jit_sorting_data';
+
+let toastTimer=null;
+function showToast(msg,type='info',dur=3500){
+  const t=document.getElementById('syncToast');
+  t.textContent=msg;t.className='sync-toast show '+type;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.className='sync-toast',dur);
+}
+
+async function pushToSheets(record){
+  try{
+    showToast('⏳ Saving to Google Sheets…','info',8000);
+    const body=new URLSearchParams({timestamp:record.timestamp,name:record.name,email:record.email,phone:record.phone,city:record.city,branch:record.branch,branchCode:record.branchCode});
+    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',body});
+    showToast('✅ Saved to Google Sheets!','ok',4000);return true;
+  }catch(err){showToast('⚠️ Offline — saved locally','err',5000);return false;}
+}
+async function fetchFromSheets(){
+  try{
+    const res=await fetch(SHEETS_URL+'?action=getAll',{mode:'cors'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const rows=await res.json();
+    if(!Array.isArray(rows)||rows.length<2) return [];
+    const headers=rows[0];
+    return rows.slice(1).map(r=>{const obj={};headers.forEach((h,i)=>obj[h]=r[i]||'');return{timestamp:obj['Timestamp']||'',name:obj['Name']||'',email:obj['Email']||'',phone:obj['Phone']||'',city:obj['City']||'',branch:obj['Branch Assigned']||'',branchCode:obj['Branch Code']||'',source:'cloud'};});
+  }catch(e){return null;}
+}
+function loadLocal(){try{return JSON.parse(localStorage.getItem(LOCAL_KEY)||'[]');}catch(e){return[];}}
+function saveLocal(rec){const d=loadLocal();d.push(rec);localStorage.setItem(LOCAL_KEY,JSON.stringify(d));}
+
+const BRANCHES={
+  ME:{name:"Mechanical Engineering",emoji:"⚙️",color:"#C8922A",
+    traits:["Hands-on Builder","Analytical Thinker","Creative Maker","Precision-Driven"],
+    tagline:"You breathe life into machines — every engine, turbine and vehicle owes its existence to minds like yours.",
+    desc:"You are drawn to the physical world — to things you can touch, test and rebuild. Your instinct is to understand how mechanical energy moves and transforms. Mechanical Engineering at JIT will push you to design engines, machines, vehicles and industrial systems that the world depends on every single day.",
+    highlights:["Design jet engines, turbines and high-performance vehicles","Work in aerospace, automotive, robotics & manufacturing","Master CAD, FEA, thermodynamics and fluid systems","Build real prototypes that move, spin and power the world"]},
+  EE:{name:"Electrical Engineering",emoji:"⚡",color:"#7C3AED",
+    traits:["Power-focused","Systematic","Energetic","Grid-Thinker"],
+    tagline:"You power cities, factories and every machine the modern world runs on.",
+    desc:"You think in voltage, current and control. Electrical Engineering at JIT will make you the backbone of every industry that runs on electrical power — from smart grids to motor drives.",
+    highlights:["Design power grids, transformers and smart energy systems","Work in renewables, railways and industrial automation","Master control systems, machines and power electronics","Power the infrastructure of a billion-person nation"]},
+  ETC:{name:"Electronics & Telecommunication",emoji:"📡",color:"#0284C7",
+    traits:["Signal-Minded","Precise","Inventive","Circuit-Savvy"],
+    tagline:"You design invisible highways the world communicates on — circuits, signals and smart systems.",
+    desc:"E&TC Engineering at JIT trains you in VLSI, embedded systems, communication networks and the electronics powering every smart device around you.",
+    highlights:["Design chips, antennas and embedded systems","Work in ISRO, defence, telecom and semiconductor firms","Master VLSI, 5G, IoT and signal processing","Build the hardware that makes every smart device intelligent"]},
+  CS:{name:"Computer Engineering",emoji:"💻",color:"#059669",
+    traits:["Logical","Systems-Thinker","Inventive","Architectural"],
+    tagline:"You build from chip to cloud — bridging hardware and software with precision.",
+    desc:"Computer Engineering at JIT bridges hardware and software — making you a complete builder who understands machines at every level.",
+    highlights:["Build operating systems, compilers and system architecture","Work in cybersecurity, deep-tech and software engineering","Master algorithms, networks and hardware-software co-design","Architect the digital infrastructure of the 21st century"]},
+  IT:{name:"Information Technology",emoji:"🌐",color:"#0891B2",
+    traits:["Communicative","Organised","Connector","Digital Strategist"],
+    tagline:"You make complex digital systems usable, secure and efficient for everyone.",
+    desc:"IT at JIT prepares you to manage networks, build enterprise applications and lead digital transformation across every industry.",
+    highlights:["Manage cloud infrastructure, DevOps and enterprise systems","Work in cybersecurity, BI and digital transformation","Master networking, databases and enterprise architecture","Drive India's digital economy with UPI-scale thinking"]},
+  CIV:{name:"Civil Engineering",emoji:"🏗️",color:"#B45309",
+    traits:["Structured","Patient","Detail-Oriented","Legacy Builder"],
+    tagline:"You build what the world stands on — bridges, dams, roads and the skylines of tomorrow.",
+    desc:"Civil Engineering at JIT trains you to design bridges, roads, buildings and infrastructure that serve communities and outlast generations.",
+    highlights:["Design bridges, dams, skyscrapers and expressways","Work in infrastructure, urban planning and structural consultancy","Master structural analysis, geotechnics and water resources","Build the physical backbone that holds civilisation together"]},
+  AI:{name:"AI & Data Science",emoji:"🧠",color:"#9333EA",
+    traits:["Curious","Data-Driven","Pattern-Seeker","Algorithmic"],
+    tagline:"You see patterns where others see chaos — building systems that learn and evolve.",
+    desc:"AI & Data Science at JIT trains you to create intelligent models, analyse massive datasets and build the future of human–machine intelligence.",
+    highlights:["Build neural networks, LLMs and computer vision systems","Work in healthcare AI, fintech, autonomous vehicles and research","Master deep learning, NLP, MLOps and big data pipelines","Shape the intelligence layer of every future technology"]}
+};
+
+const P1=[
+  {q:"When you imagine your ideal engineering career, which world pulls you most?",opts:[
+    {icon:"⚙️",lbl:"A",text:"Designing and building physical machines, vehicles or industrial systems",scores:{ME:5,EE:2,CIV:1}},
+    {icon:"🏗️",lbl:"B",text:"Constructing roads, bridges, dams and the infrastructure society stands on",scores:{CIV:5,ME:2,EE:1}},
+    {icon:"📡",lbl:"C",text:"Working with circuits, signals, electronics and communication systems",scores:{ETC:5,EE:3,CS:1}},
+    {icon:"💻",lbl:"D",text:"Writing code, building digital systems or working with data and AI",scores:{CS:3,IT:2,AI:3}}
+  ]},
+  {q:"Which of these topics gets your full attention in class?",opts:[
+    {icon:"🔧",lbl:"A",text:"Thermodynamics, Fluid Mechanics & Machine Design",scores:{ME:5,EE:1,CIV:1}},
+    {icon:"⚡",lbl:"B",text:"Electrical circuits, power systems & electromagnetism",scores:{EE:5,ETC:2,ME:1}},
+    {icon:"🌍",lbl:"C",text:"Structures, soil mechanics, surveying & construction",scores:{CIV:5,ME:1,EE:1}},
+    {icon:"📊",lbl:"D",text:"Programming, databases, networking or machine learning",scores:{CS:3,IT:2,AI:2}}
+  ]},
+  {q:"You spot a real problem in your city. Your instinct is to…",opts:[
+    {icon:"🔩",lbl:"A",text:"Build or retrofit a mechanical system — pump, engine or machine — to fix it",scores:{ME:5,EE:2,CIV:1}},
+    {icon:"🏚️",lbl:"B",text:"Design better infrastructure — a stronger road, building or water system",scores:{CIV:5,ME:2,EE:1}},
+    {icon:"📱",lbl:"C",text:"Create an app, dashboard or digital platform to solve it",scores:{IT:3,CS:2,AI:2}},
+    {icon:"🔌",lbl:"D",text:"Deploy sensors, smart devices or automation to monitor and fix it",scores:{ETC:5,EE:2,IT:1}}
+  ]},
+  {q:"Pick the hands-on activity that genuinely excites you most:",opts:[
+    {icon:"🛠️",lbl:"A",text:"Disassembling an engine, fixing it and watching it roar back to life",scores:{ME:5,EE:2,ETC:1}},
+    {icon:"🏗️",lbl:"B",text:"Reading site blueprints and overseeing a real construction project",scores:{CIV:5,ME:1,EE:1}},
+    {icon:"🔌",lbl:"C",text:"Soldering a circuit board and testing its behaviour with an oscilloscope",scores:{ETC:5,EE:3,CS:1}},
+    {icon:"💡",lbl:"D",text:"Wiring a motor control panel and running it at full industrial load",scores:{EE:5,ETC:2,ME:1}}
+  ]}
+];
+
+const P2={
+  ME:[{q:"Which mechanical engineering challenge excites you most?",opts:[{icon:"🚗",lbl:"A",text:"Designing the suspension, drivetrain and chassis of a high-performance car",scores:{ME:5}},{icon:"✈️",lbl:"B",text:"Engineering the propulsion and landing gear of a next-generation aircraft",scores:{ME:5}},{icon:"🌊",lbl:"C",text:"Designing a wave-energy turbine converting ocean motion to electricity",scores:{ME:5}},{icon:"🤖",lbl:"D",text:"Building a robotic arm for precision surgical or manufacturing use",scores:{ME:5}}]},{q:"Where would you want to spend most of your working hours?",opts:[{icon:"🏭",lbl:"A",text:"On a factory floor operating CNC machines, lathes and turbines",scores:{ME:5}},{icon:"🔬",lbl:"B",text:"In an R&D lab testing new alloys, composites and structural prototypes",scores:{ME:5}},{icon:"🚂",lbl:"C",text:"Designing bogies and braking systems of a high-speed rail network",scores:{ME:5}},{icon:"⚙️",lbl:"D",text:"In an aerospace plant refining jet engine components under extreme stress",scores:{ME:5}}]},{q:"Which branch of Mechanical Engineering appeals most to you?",opts:[{icon:"🔥",lbl:"A",text:"Thermal & Energy — heat engines, refrigeration, power plants",scores:{ME:5}},{icon:"🔩",lbl:"B",text:"Design & Manufacturing — CAD, CNC, precision machining",scores:{ME:5}},{icon:"🌀",lbl:"C",text:"Fluid Mechanics — hydraulics, aerodynamics, pumps and compressors",scores:{ME:5}},{icon:"🤖",lbl:"D",text:"Mechatronics & Robotics — automated machines, actuators, control systems",scores:{ME:5}}]},{q:"Which engineering achievement impresses you most?",opts:[{icon:"🚀",lbl:"A",text:"SpaceX Raptor engine — the most powerful rocket engine ever built",scores:{ME:5}},{icon:"🏎️",lbl:"B",text:"Formula 1 cars generating 1000+ bhp while weighing under 800 kg",scores:{ME:5}},{icon:"⚙️",lbl:"C",text:"Industrial gas turbines running at 60% efficiency generating gigawatts",scores:{ME:5}},{icon:"🤖",lbl:"D",text:"Boston Dynamics robots walking, running and performing complex tasks",scores:{ME:5}}]},{q:"For your college tech-fest project, you build…",opts:[{icon:"💧",lbl:"A",text:"A miniature hydraulic press demonstrating Pascal's law",scores:{ME:5}},{icon:"🌬️",lbl:"B",text:"A wind turbine model measuring power output vs blade pitch angle",scores:{ME:5}},{icon:"🔩",lbl:"C",text:"A robotic gripper arm controlled by microcontroller and servo motors",scores:{ME:5}},{icon:"🔥",lbl:"D",text:"A Stirling engine that runs entirely on waste heat from a candle flame",scores:{ME:5}}]}],
+  CIV:[{q:"Which civil engineering project sounds most thrilling?",opts:[{icon:"🌊",lbl:"A",text:"Designing a flood-resistant gravity dam for Maharashtra's drought regions",scores:{CIV:5}},{icon:"🌉",lbl:"B",text:"Calculating cable tension for a record-breaking cable-stayed bridge",scores:{CIV:5}},{icon:"🏙️",lbl:"C",text:"Planning an earthquake-resistant 60-storey skyscraper",scores:{CIV:5}},{icon:"🛣️",lbl:"D",text:"Designing India's longest mountain expressway through the Sahyadris",scores:{CIV:5}}]},{q:"Where would you spend most of your engineering career?",opts:[{icon:"🏗️",lbl:"A",text:"On a live construction site managing a metro or highway project",scores:{CIV:5}},{icon:"🔬",lbl:"B",text:"In a materials lab testing concrete mix designs and rebar configurations",scores:{CIV:5}},{icon:"🏙️",lbl:"C",text:"In an urban planning office designing smart, sustainable city infrastructure",scores:{CIV:5}},{icon:"📐",lbl:"D",text:"In a structural consultancy analysing loads and failure modes",scores:{CIV:5}}]},{q:"Which branch of Civil Engineering interests you most?",opts:[{icon:"🏛️",lbl:"A",text:"Structural Engineering — loads, beams, columns, foundations",scores:{CIV:5}},{icon:"🌍",lbl:"B",text:"Geotechnical Engineering — soil analysis, pile foundations, slope stability",scores:{CIV:5}},{icon:"💧",lbl:"C",text:"Water Resources — dams, canals, flood control and irrigation",scores:{CIV:5}},{icon:"🏙️",lbl:"D",text:"Transportation — highways, bridges, rail networks and airports",scores:{CIV:5}}]},{q:"Which civil engineering headline would make you stop scrolling?",opts:[{icon:"🌊",lbl:"A",text:"'World's Longest Sea Bridge Completed 6 Months Under Budget'",scores:{CIV:5}},{icon:"🏙️",lbl:"B",text:"'New Self-Healing Concrete Repairs Cracks Without Human Intervention'",scores:{CIV:5}},{icon:"🛣️",lbl:"C",text:"'India's First Hyperloop Corridor Between Mumbai & Pune Breaks Ground'",scores:{CIV:5}},{icon:"🌍",lbl:"D",text:"'Engineers Build Floating City That Withstands Category 5 Hurricanes'",scores:{CIV:5}}]},{q:"For your college tech-fest project, you build…",opts:[{icon:"🏚️",lbl:"A",text:"A low-cost earthquake-proof housing prototype using bamboo composites",scores:{CIV:5}},{icon:"💧",lbl:"B",text:"A scale model of a gravity dam demonstrating spillway and hydrostatic pressure",scores:{CIV:5}},{icon:"🌉",lbl:"C",text:"A suspension bridge model tested under incremental load until failure",scores:{CIV:5}},{icon:"🏙️",lbl:"D",text:"A smart pothole detection system using a vehicle-mounted vibration sensor",scores:{CIV:5}}]}],
+  EE:[{q:"Which electrical engineering project sounds most exciting?",opts:[{icon:"⚡",lbl:"A",text:"Designing a 400 kV substation for Maharashtra's state power grid",scores:{EE:5}},{icon:"🌞",lbl:"B",text:"Building a solar microgrid with MPPT to power a remote village off-grid",scores:{EE:5}},{icon:"🏭",lbl:"C",text:"Designing a variable-frequency drive for energy-efficient industrial motors",scores:{EE:5}},{icon:"🚆",lbl:"D",text:"Developing SCADA systems for automated railway signalling",scores:{EE:5}}]},{q:"Where would you most love to work?",opts:[{icon:"⚡",lbl:"A",text:"A power plant — managing generators, transformers and grid stability",scores:{EE:5}},{icon:"🌞",lbl:"B",text:"A renewable energy startup designing the future of solar + battery storage",scores:{EE:5}},{icon:"🏭",lbl:"C",text:"An industrial automation company building smart motor control systems",scores:{EE:5}},{icon:"🔬",lbl:"D",text:"An R&D lab developing next-generation high-voltage electrical equipment",scores:{EE:5}}]},{q:"Which branch of Electrical Engineering appeals most to you?",opts:[{icon:"⚡",lbl:"A",text:"Power Systems — generation, transmission and distribution of electricity",scores:{EE:5}},{icon:"🔌",lbl:"B",text:"Control Systems — feedback loops, PID controllers and automation",scores:{EE:5}},{icon:"🌞",lbl:"C",text:"Renewable Energy — solar, wind, fuel cells and smart grids",scores:{EE:5}},{icon:"🏭",lbl:"D",text:"Electrical Machines — motors, generators, transformers and drives",scores:{EE:5}}]},{q:"Which electrical achievement impresses you most?",opts:[{icon:"⚡",lbl:"A",text:"India's Unified Power Grid — electricity to 1.4 billion people",scores:{EE:5}},{icon:"🌞",lbl:"B",text:"Bhadla Solar Park — 2.25 GW of clean energy from Rajasthan desert",scores:{EE:5}},{icon:"🚆",lbl:"C",text:"Japan's Maglev trains — levitating at 600 km/h on electromagnetic fields",scores:{EE:5}},{icon:"🔋",lbl:"D",text:"Tesla Megapack — 3 GWh battery systems stabilising entire state power grids",scores:{EE:5}}]},{q:"For your college tech-fest project, you build…",opts:[{icon:"🌞",lbl:"A",text:"A solar MPPT charge controller with real-time efficiency monitoring",scores:{EE:5}},{icon:"⚡",lbl:"B",text:"A miniature smart grid balancing solar, battery and grid load automatically",scores:{EE:5}},{icon:"🔌",lbl:"C",text:"A PID-controlled DC motor speed system with real-time graph display",scores:{EE:5}},{icon:"💡",lbl:"D",text:"An automatic power factor correction panel for an inductive load",scores:{EE:5}}]}],
+  ETC:[{q:"Which electronics/telecom project excites you most?",opts:[{icon:"📡",lbl:"A",text:"Designing a LoRa antenna system for a 10 km rural IoT sensor network",scores:{ETC:5}},{icon:"🔬",lbl:"B",text:"Designing a VLSI chip for ultra-low-power wearable health monitoring",scores:{ETC:5}},{icon:"🛰️",lbl:"C",text:"Building the signal processing unit for a satellite communication transponder",scores:{ETC:5}},{icon:"📱",lbl:"D",text:"Programming a Raspberry Pi-based embedded vision system for drones",scores:{ETC:5}}]},{q:"Where would you most love to spend your engineering career?",opts:[{icon:"🔬",lbl:"A",text:"A VLSI design lab crafting the next generation of processor chips",scores:{ETC:5}},{icon:"📡",lbl:"B",text:"A telecom R&D lab designing 6G antenna systems and signal protocols",scores:{ETC:5}},{icon:"🛰️",lbl:"C",text:"An ISRO or defence lab building communication payloads for satellites",scores:{ETC:5}},{icon:"💻",lbl:"D",text:"An embedded systems company programming firmware for IoT devices",scores:{ETC:5}}]},{q:"Which branch of E&TC interests you most?",opts:[{icon:"🔬",lbl:"A",text:"VLSI & Semiconductor Design — transistors at the nanometre scale",scores:{ETC:5}},{icon:"📡",lbl:"B",text:"Wireless & RF Communication — antennas, 5G and satellite signals",scores:{ETC:5}},{icon:"💻",lbl:"C",text:"Embedded Systems — microcontrollers, firmware and real-time OS",scores:{ETC:5}},{icon:"📷",lbl:"D",text:"Signal Processing — image, audio and data processing algorithms",scores:{ETC:5}}]},{q:"Which E&TC achievement impresses you most?",opts:[{icon:"📱",lbl:"A",text:"The 3nm transistors inside Apple M-series chips — 19 billion per chip",scores:{ETC:5}},{icon:"🌐",lbl:"B",text:"Undersea fibre optic cables carrying 95% of the world's internet",scores:{ETC:5}},{icon:"🛰️",lbl:"C",text:"Voyager 1's radio signal reaching Earth from 23 billion km away",scores:{ETC:5}},{icon:"📡",lbl:"D",text:"5G mmWave networks delivering 10 Gbps wireless speeds in dense cities",scores:{ETC:5}}]},{q:"For your college tech-fest project, you build…",opts:[{icon:"📡",lbl:"A",text:"A LoRa IoT network for real-time crop moisture monitoring over 5 km",scores:{ETC:5}},{icon:"🔬",lbl:"B",text:"A PCB-level FM radio transmitter designed from scratch with RF filters",scores:{ETC:5}},{icon:"💻",lbl:"C",text:"An STM32 embedded system that reads sensor data and logs to the cloud",scores:{ETC:5}},{icon:"📷",lbl:"D",text:"A real-time object detection system running on a Raspberry Pi camera",scores:{ETC:5}}]}],
+  CS:[{q:"Which computer engineering area excites you most?",opts:[{icon:"⚙️",lbl:"A",text:"Operating systems, compilers and low-level systems programming",scores:{CS:5}},{icon:"🔐",lbl:"B",text:"Cybersecurity — ethical hacking, cryptography and network defence",scores:{CS:5}},{icon:"🖥️",lbl:"C",text:"Computer architecture — CPU design and hardware-software co-design",scores:{CS:5}},{icon:"🌐",lbl:"D",text:"Full-stack development — building scalable web and mobile platforms",scores:{CS:5}}]},{q:"Which computing achievement impresses you most?",opts:[{icon:"💻",lbl:"A",text:"Linux kernel — 30 million lines of code powering billions of devices",scores:{CS:5}},{icon:"🔐",lbl:"B",text:"RSA encryption — math that secures every banking and government system",scores:{CS:5}},{icon:"🖥️",lbl:"C",text:"Apple Silicon M-series — CPUs that beat Intel while sipping battery power",scores:{CS:5}},{icon:"⚙️",lbl:"D",text:"Git — version control coordinating millions of developers worldwide",scores:{CS:5}}]},{q:"Where would you most love to work?",opts:[{icon:"🔐",lbl:"A",text:"A cybersecurity firm protecting national critical infrastructure",scores:{CS:5}},{icon:"⚙️",lbl:"B",text:"A systems software team at Google, Microsoft or an Indian deep-tech startup",scores:{CS:5}},{icon:"🖥️",lbl:"C",text:"A semiconductor company designing processor architecture",scores:{CS:5}},{icon:"🌐",lbl:"D",text:"Founding a product company that millions of people use every day",scores:{CS:5}}]},{q:"Which computing sub-field appeals most to you?",opts:[{icon:"⚙️",lbl:"A",text:"Systems & OS — kernels, schedulers, memory management",scores:{CS:5}},{icon:"🔐",lbl:"B",text:"Cybersecurity & Cryptography",scores:{CS:5}},{icon:"🌐",lbl:"C",text:"Software Engineering — design patterns and scalable architecture",scores:{CS:5}},{icon:"🖥️",lbl:"D",text:"Computer Architecture & VLSI-software co-design",scores:{CS:5}}]},{q:"For your college tech-fest project, you build…",opts:[{icon:"⚙️",lbl:"A",text:"A custom mini OS kernel with process scheduling and memory management",scores:{CS:5}},{icon:"🔐",lbl:"B",text:"A network packet analyser that detects intrusion attempts in real time",scores:{CS:5}},{icon:"🌐",lbl:"C",text:"A scalable microservices app deployed on Kubernetes for 100k users",scores:{CS:5}},{icon:"🖥️",lbl:"D",text:"A RISC-V CPU core simulated in Verilog with basic instruction execution",scores:{CS:5}}]}],
+  IT:[{q:"Which IT area excites you most?",opts:[{icon:"🌐",lbl:"A",text:"Cloud infrastructure — AWS, Azure, managing enterprise-scale deployments",scores:{IT:5}},{icon:"🛡️",lbl:"B",text:"Network security — firewalls, VPNs and zero-trust architecture",scores:{IT:5}},{icon:"📊",lbl:"C",text:"Business intelligence — dashboards, reports and data-driven decisions",scores:{IT:5}},{icon:"🤝",lbl:"D",text:"IT project management — leading digital transformation for organisations",scores:{IT:5}}]},{q:"Where would you most love to work?",opts:[{icon:"🏦",lbl:"A",text:"A large bank or financial institution managing digital infrastructure",scores:{IT:5}},{icon:"🌐",lbl:"B",text:"A cloud services company like AWS, Azure or a homegrown Indian equivalent",scores:{IT:5}},{icon:"🏛️",lbl:"C",text:"The government's Digital India programme modernising public systems",scores:{IT:5}},{icon:"🤝",lbl:"D",text:"A consulting firm helping enterprises with IT strategy and transformation",scores:{IT:5}}]},{q:"Which IT sub-field appeals most to you?",opts:[{icon:"☁️",lbl:"A",text:"Cloud Computing & DevOps",scores:{IT:5}},{icon:"🛡️",lbl:"B",text:"Cybersecurity & Network Administration",scores:{IT:5}},{icon:"📊",lbl:"C",text:"Business Intelligence & Data Analytics",scores:{IT:5}},{icon:"🌐",lbl:"D",text:"Enterprise Application Development & ERP",scores:{IT:5}}]},{q:"Which IT achievement impresses you most?",opts:[{icon:"🌐",lbl:"A",text:"UPI — India's digital backbone processing 10 billion transactions/month",scores:{IT:5}},{icon:"☁️",lbl:"B",text:"AWS — infrastructure powering Netflix, NASA and half the world's websites",scores:{IT:5}},{icon:"🛡️",lbl:"C",text:"India's CERT-In defending national digital infrastructure from cyberattacks",scores:{IT:5}},{icon:"📊",lbl:"D",text:"Aadhaar — the world's largest biometric database serving 1.4 billion people",scores:{IT:5}}]},{q:"For your college tech-fest project, you build…",opts:[{icon:"☁️",lbl:"A",text:"A containerised web app deployed on Kubernetes with auto-scaling",scores:{IT:5}},{icon:"🛡️",lbl:"B",text:"A network intrusion detection system with real-time alerting",scores:{IT:5}},{icon:"📊",lbl:"C",text:"A Power BI dashboard showing college placement trends over 5 years",scores:{IT:5}},{icon:"🌐",lbl:"D",text:"A full-stack college management portal with role-based access control",scores:{IT:5}}]}],
+  AI:[{q:"Which AI/Data Science area excites you most?",opts:[{icon:"🧠",lbl:"A",text:"Deep learning — building and training neural networks from scratch",scores:{AI:5}},{icon:"📊",lbl:"B",text:"Data engineering — ETL pipelines, data lakes and warehousing at scale",scores:{AI:5}},{icon:"🤖",lbl:"C",text:"Reinforcement learning — agents that learn by playing and failing",scores:{AI:5}},{icon:"💬",lbl:"D",text:"Natural language processing — making machines understand human language",scores:{AI:5}}]},{q:"Where would you most love to work?",opts:[{icon:"🔬",lbl:"A",text:"An AI research lab like DeepMind, OpenAI or IISc",scores:{AI:5}},{icon:"🌾",lbl:"B",text:"A social impact startup using AI to solve agriculture or healthcare in India",scores:{AI:5}},{icon:"🏦",lbl:"C",text:"A fintech firm using ML models for fraud detection and risk analysis",scores:{AI:5}},{icon:"🚗",lbl:"D",text:"An autonomous vehicle company building perception and decision systems",scores:{AI:5}}]},{q:"Which AI sub-field appeals most to you?",opts:[{icon:"🧠",lbl:"A",text:"Neural Networks & Deep Learning",scores:{AI:5}},{icon:"📊",lbl:"B",text:"Big Data & Cloud Analytics",scores:{AI:5}},{icon:"💬",lbl:"C",text:"Natural Language Processing & Generative AI",scores:{AI:5}},{icon:"🤖",lbl:"D",text:"Computer Vision & Autonomous Systems",scores:{AI:5}}]},{q:"Which AI achievement impresses you most?",opts:[{icon:"🧠",lbl:"A",text:"AlphaFold — AI solved 50 years of protein structure prediction in months",scores:{AI:5}},{icon:"💬",lbl:"B",text:"Large language models that write code, poetry and explain science to anyone",scores:{AI:5}},{icon:"🚗",lbl:"C",text:"Waymo — autonomous cars driving millions of miles without human input",scores:{AI:5}},{icon:"🏥",lbl:"D",text:"AI systems detecting diabetic retinopathy from eye scans with 90% accuracy",scores:{AI:5}}]},{q:"For your college tech-fest project, you build…",opts:[{icon:"🌾",lbl:"A",text:"A CNN model predicting crop disease from smartphone photos of leaves",scores:{AI:5}},{icon:"💬",lbl:"B",text:"A fine-tuned LLM chatbot that answers JEE Maths problems step by step",scores:{AI:5}},{icon:"📊",lbl:"C",text:"A real-time fraud detection model trained on Kaggle credit card data",scores:{AI:5}},{icon:"🤖",lbl:"D",text:"A reinforcement learning agent that learns to play Snake from pixel input",scores:{AI:5}}]}]
+};
+
+let screen='register',phase=1,qIdx=0,answers=[];
+let scores={ME:0,EE:0,ETC:0,CS:0,IT:0,CIV:0,AI:0};
+let detectedBranch=null,allQ=[],userChoices=[];
+let currentStudent={name:'',email:'',phone:'',city:''};
+let adminLoggedIn=false,adminFilter='ALL',adminSearch='';
+let adminData=[];
+
+function topBranch(){return Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];}
+function detectBranch(){return Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];}
+function render(){renderTo(document.getElementById('root'));}
+function renderTo(el){
+  if(screen==='register') renderRegister(el);
+  else if(screen==='intro') renderIntro(el);
+  else if(screen==='quiz') renderQuiz(el);
+  else if(screen==='sorting') renderSorting(el);
+  else if(screen==='result') renderResult(el);
+  else if(screen==='adminLogin') renderAdminLogin(el);
+  else if(screen==='admin') renderAdmin(el);
+}
+
+function renderRegister(root){
+  root.innerHTML=`
+  <div class="screen login-wrap">
+    <div class="login-hat">${hatSVG(100,false)}</div>
+    <div class="login-eye">JIT Nashik · Admissions 2025–26</div>
+    <h1 class="login-title">Engineering<br>Sorting Test</h1>
+    <div class="login-rule"></div>
+    <p class="login-sub">Enter your details to begin the sorting ceremony</p>
+    <div class="login-card">
+      <div class="form-group">
+        <label class="form-label">Full Name <span>*</span></label>
+        <input class="form-input" id="f_name" type="text" placeholder="e.g. Rahul Sharma" maxlength="80"/>
+        <div class="form-error" id="e_name">Please enter your full name</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email Address <span>*</span></label>
+          <input class="form-input" id="f_email" type="email" placeholder="rahul@gmail.com" maxlength="100"/>
+          <div class="form-error" id="e_email">Enter a valid email</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mobile Number <span>*</span></label>
+          <input class="form-input" id="f_phone" type="tel" placeholder="9876543210" maxlength="15"/>
+          <div class="form-error" id="e_phone">Enter a valid 10-digit number</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">City / Town <span>*</span></label>
+        <input class="form-input" id="f_city" type="text" placeholder="e.g. Nashik" maxlength="60"/>
+        <div class="form-error" id="e_city">Please enter your city</div>
+      </div>
+      <button class="submit-btn" onclick="submitRegister()">Begin the Sorting Ceremony ✨</button>
+      <p class="privacy-note">🔒 Your information is saved securely to JIT Nashik's Google Sheet for admissions guidance.</p>
+    </div>
+  </div>`;
+  document.getElementById('f_name').addEventListener('keydown',e=>{if(e.key==='Enter') submitRegister();});
+}
+
+function submitRegister(){
+  const name=document.getElementById('f_name').value.trim();
+  const email=document.getElementById('f_email').value.trim();
+  const phone=document.getElementById('f_phone').value.trim();
+  const city=document.getElementById('f_city').value.trim();
+  let ok=true;
+  const show=(id,v)=>document.getElementById(id).classList.toggle('show',v);
+  show('e_name',!name);if(!name) ok=false;
+  const emailOk=email&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  show('e_email',!emailOk);if(!emailOk) ok=false;
+  const phoneOk=phone&&/^\d{10}$/.test(phone.replace(/\s/g,''));
+  show('e_phone',!phoneOk);if(!phoneOk) ok=false;
+  show('e_city',!city);if(!city) ok=false;
+  if(!ok) return;
+  currentStudent={name,email,phone:phone.replace(/\s/g,''),city};
+  screen='intro';render();
+}
+
+function renderIntro(root){
+  root.innerHTML=`
+  <div class="screen intro-wrap">
+    <div class="hat-anim">${hatSVG(115,false)}</div>
+    <div class="intro-eye">JIT Nashik Presents</div>
+    <h1 class="intro-title">The Engineering<br>Sorting Test</h1>
+    <div class="intro-rule"></div>
+    <p class="intro-sub">Like the Hogwarts Sorting Hat — but for Engineers</p>
+    <div class="intro-card">
+      <p>Welcome, <strong>${currentStudent.name}</strong>! Answer <strong>9 questions</strong> across two phases. The first 4 identify your engineering domain, then the test <strong>adapts completely</strong> — the next 5 are tailored exclusively to your branch.</p>
+    </div>
+    <button class="begin-btn" onclick="startQuiz()">✨ Begin Sorting</button>
+    <div class="branch-chips">
+      ${Object.entries(BRANCHES).map(([,b])=>`<div class="chip"><span>${b.emoji}</span><span>${b.name.split(' ')[0]}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function startQuiz(){
+  screen='quiz';phase=1;qIdx=0;answers=[];userChoices=[];
+  Object.keys(scores).forEach(k=>scores[k]=0);
+  detectedBranch=null;allQ=[...P1];render();
+}
+
+function renderQuiz(root){
+  const q=allQ[qIdx];
+  const total=P1.length+5;
+  const pct=Math.round(qIdx/total*100);
+  const sel=answers[qIdx];
+  const isLast=(phase===2&&qIdx===allQ.length-1);
+  const atDetect=(phase===1&&qIdx===P1.length-1);
+  root.innerHTML=`
+  <div class="screen quiz-wrap">
+    <div class="student-bar">👤 <strong>${currentStudent.name}</strong> &nbsp;·&nbsp; ${currentStudent.city} &nbsp;·&nbsp; ${currentStudent.phone}</div>
+    <div class="phase-pill">${phase===1?'🔍 Phase 1 — Discover Your Domain':'🎯 Phase 2 — '+(BRANCHES[detectedBranch||'ME'].name)+' Deep Dive'}</div>
+    <div class="progress-wrap">
+      <div class="prog-top"><span class="prog-lbl">Question ${qIdx+1} of ${total}</span><span class="prog-num">${pct}% complete</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="q-card"><div class="q-num">Q${qIdx+1}</div><div class="q-text">${q.q}</div></div>
+    <div class="opts">
+      ${q.opts.map((o,i)=>`<button class="opt${sel===i?' sel':''}" onclick="pick(${i})"><span class="opt-icon">${o.icon}</span><span class="opt-lbl">Option ${o.lbl}</span><span>${o.text}</span></button>`).join('')}
+    </div>
+    <button class="nxt-btn${sel!==undefined?' show':''}" id="nxt" onclick="advance()">
+      ${isLast?'✨ Reveal My Destiny':atDetect?'Detect My Branch →':'Next Question →'}
+    </button>
+  </div>`;
+}
+
+function pick(i){
+  answers[qIdx]=i;
+  document.querySelectorAll('.opt').forEach((b,j)=>b.classList.toggle('sel',j===i));
+  const nb=document.getElementById('nxt');if(nb) nb.classList.add('show');
+}
+
+function advance(){
+  if(answers[qIdx]===undefined) return;
+  const q=allQ[qIdx];const chosen=q.opts[answers[qIdx]];
+  Object.entries(chosen.scores).forEach(([k,v])=>{scores[k]=(scores[k]||0)+v;});
+  userChoices.push({qText:q.q,icon:chosen.icon,aText:chosen.text});
+  if(phase===1&&qIdx===P1.length-1){
+    detectedBranch=detectBranch();allQ=[...P1,...P2[detectedBranch]];
+    phase=2;qIdx++;render();return;
+  }
+  if(qIdx===allQ.length-1){screen='sorting';render();setTimeout(()=>{saveAndResult();},4400);return;}
+  qIdx++;render();
+}
+
+async function saveAndResult(){
+  const key=topBranch();
+  const record={id:Date.now(),timestamp:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'}),name:currentStudent.name,email:currentStudent.email,phone:currentStudent.phone,city:currentStudent.city,branch:BRANCHES[key].name,branchCode:key,detectedDomain:detectedBranch,scores:{...scores}};
+  saveLocal(record);pushToSheets(record);
+  screen='result';render();
+}
+
+function renderSorting(root){
+  document.getElementById('app').style.background='none';
+  let candles='',stars='';
+  for(let i=0;i<20;i++){const x=2.5+i*5,h=30+Math.random()*80,d=(Math.random()*1.5).toFixed(2);candles+=`<div class="candle" style="left:${x}%;bottom:0;position:absolute"><div class="candle-flame" style="animation-delay:${d}s"></div><div class="candle-wax" style="height:${h}px"></div></div>`;}
+  for(let i=0;i<45;i++){const s=Math.random()<.15?3:Math.random()<.4?2:1;stars+=`<div style="position:absolute;border-radius:50%;background:#fff;left:${Math.random()*100}%;top:${Math.random()*85}%;width:${s}px;height:${s}px;animation:starDrift ${(2.5+Math.random()*3).toFixed(1)}s ${(Math.random()*4).toFixed(1)}s ease-in-out infinite;opacity:.7"></div>`;}
+  const msgs=["Analysing your engineering personality…","Mapping your strengths and instincts…","The Hat is consulting the ancient scrolls…","Your destiny is crystallising…","Almost there…"];
+  let mi=0;
+  root.innerHTML=`
+  <div class="sort-screen">
+    <div style="position:absolute;bottom:0;left:0;right:0;pointer-events:none">${candles}</div>
+    <div style="position:absolute;inset:0;pointer-events:none">${stars}</div>
+    <div style="position:relative;z-index:2;animation:hatSpeak 1.6s ease-in-out infinite;display:inline-block;margin-bottom:.4rem">${hatSVG(165,true)}</div>
+    <div class="sort-title">The Sorting Hat Is Thinking…</div>
+    <div class="sort-spin"></div>
+    <div class="sort-msg" id="sm">${msgs[0]}</div>
+    <div class="sort-sub" style="margin-top:.5rem">Hmm… difficult, very difficult…</div>
+  </div>`;
+  const iv=setInterval(()=>{mi=(mi+1)%msgs.length;const el=document.getElementById('sm');if(el) el.textContent=msgs[mi];else clearInterval(iv);},1100);
+}
+
+function renderResult(root){
+  document.getElementById('app').style.background='';
+  const key=topBranch();const b=BRANCHES[key];
+  const total=Object.values(scores).reduce((a,c)=>a+c,0)||1;
+  const top4=Object.entries(scores).sort((a,z)=>z[1]-a[1]).slice(0,4);
+
+  // Floating hex decorations
+  let hexHTML='';
+  const hexSizes=[60,80,50,90,70,55,85,65];
+  const positions=[
+    {top:'5%',left:'3%'},{top:'15%',right:'2%'},{top:'35%',left:'1%'},
+    {top:'50%',right:'3%'},{top:'70%',left:'5%'},{top:'80%',right:'1%'},
+    {top:'25%',left:'40%'},{top:'60%',right:'25%'}
+  ];
+  hexSizes.forEach((sz,i)=>{
+    const pos=positions[i];
+    const posStr=Object.entries(pos).map(([k,v])=>`${k}:${v}`).join(';');
+    const delay=(i*1.3).toFixed(1);
+    hexHTML+=`<div class="r-hex" style="${posStr};animation:hexFloat ${4+i*0.7}s ${delay}s ease-in-out infinite">
+      <svg width="${sz}" height="${sz}" viewBox="0 0 100 100"><polygon points="50,2 95,26 95,74 50,98 5,74 5,26" stroke-width="1.5" stroke="var(--jit-red)"/></svg>
+    </div>`;
+  });
+
+  // Floating particles
+  let particleHTML='';
+  for(let i=0;i<18;i++){
+    const size=Math.random()<0.3?6:Math.random()<0.5?4:3;
+    const isGold=Math.random()>0.5;
+    particleHTML+=`<div style="position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${isGold?'rgba(200,146,42,0.25)':'rgba(139,26,26,0.15)'};left:${Math.random()*100}%;top:${Math.random()*100}%;animation:particleDrift ${(5+Math.random()*7).toFixed(1)}s ${(Math.random()*5).toFixed(1)}s ease-in-out infinite"></div>`;
+  }
+
+  const highlightsHTML=b.highlights.map((h,i)=>`
+    <div class="r-choice-item" style="animation-delay:${i*.1}s">
+      <div class="r-choice-tick"><svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,2.5"/></svg></div>
+      <div><div class="r-choice-a">${h}</div></div>
+    </div>`).join('');
+
+  const choicesHTML=userChoices.map((c,i)=>`
+    <div class="r-choice-item" style="animation-delay:${i*.07}s">
+      <div class="r-choice-tick"><svg viewBox="0 0 12 12"><polyline points="1.5,6 4.5,9 10.5,2.5"/></svg></div>
+      <div>
+        <div class="r-choice-q">Q${i+1} — ${c.qText}</div>
+        <div class="r-choice-a"><span style="font-size:1.1rem;margin-right:4px">${c.icon}</span>${c.aText}</div>
+      </div>
+    </div>`).join('');
+
+  const dnaHTML=top4.map(([k,v],idx)=>{
+    const pct=Math.round(v/total*100),isWin=idx===0;
+    const br=BRANCHES[k];
+    return `<div class="r-dna-row${isWin?' winner':''}">
+      <div class="r-dna-lbl">
+        <span class="r-dna-branch${isWin?' top-match':''}">${br.emoji}&nbsp;${br.name}${isWin?'<span class="r-winner-crown">👑</span><span class="r-winner-badge">TOP MATCH</span>':''}</span>
+        <span class="r-dna-pct${isWin?' top-match':''}">${pct}%</span>
+      </div>
+      <div class="r-dna-track">
+        <div class="r-dna-fill" style="--w:${pct}%;width:${pct}%;background:${isWin?'linear-gradient(90deg,var(--jit-red),var(--gold))':br.color}"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Circuit SVG for hero card
+  const circuitSVG=`<svg class="r-hero-circuit" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="10" width="180" height="180" rx="8" stroke="var(--jit-red)" stroke-width="0.5"/>
+    <line x1="10" y1="50" x2="60" y2="50" stroke="var(--jit-red)" stroke-width="0.5"/>
+    <circle cx="60" cy="50" r="3" fill="var(--jit-red)"/>
+    <line x1="60" y1="50" x2="60" y2="100" stroke="var(--jit-red)" stroke-width="0.5"/>
+    <line x1="60" y1="100" x2="120" y2="100" stroke="var(--jit-red)" stroke-width="0.5"/>
+    <circle cx="120" cy="100" r="3" fill="var(--gold)"/>
+    <line x1="120" y1="100" x2="120" y2="150" stroke="var(--gold)" stroke-width="0.5"/>
+    <line x1="120" y1="150" x2="190" y2="150" stroke="var(--gold)" stroke-width="0.5"/>
+    <rect x="80" y="40" width="20" height="10" stroke="var(--jit-red)" stroke-width="0.5"/>
+    <rect x="140" y="115" width="10" height="20" stroke="var(--gold)" stroke-width="0.5"/>
+    <line x1="30" y1="10" x2="30" y2="190" stroke="var(--jit-red)" stroke-width="0.3" stroke-dasharray="4 4"/>
+    <line x1="10" y1="130" x2="190" y2="130" stroke="var(--gold)" stroke-width="0.3" stroke-dasharray="4 4"/>
+  </svg>`;
+
+  root.innerHTML=`
+  <div class="result-outer">
+    <div class="r-hex-bg">${hexHTML}</div>
+    <div class="r-scanline"></div>
+    <div style="position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden">${particleHTML}</div>
+
+    <div class="result-scroll">
+
+      <!-- Proclamation -->
+      <div class="r-proclamation">
+        <div class="r-proc-eyebrow">The Hat Has Spoken</div>
+        <h1 class="r-proc-title">Your Destiny Has Been Revealed</h1>
+        <p class="r-proc-sub">Based on your answers, the Sorting Algorithm has determined your path</p>
+        <div class="r-proc-ornament">
+          <div class="r-proc-line" style="background:linear-gradient(90deg,transparent,var(--gold))"></div>
+          <div class="r-proc-diamond"></div>
+          <div class="r-proc-diamond" style="background:var(--jit-red)"></div>
+          <div class="r-proc-diamond"></div>
+          <div class="r-proc-line" style="background:linear-gradient(270deg,transparent,var(--gold))"></div>
+        </div>
+      </div>
+
+      <!-- Hero card -->
+      <div class="r-hero-card">
+        <div class="r-hero-top-bar"></div>
+        ${circuitSVG}
+        <div class="r-corner tl"></div><div class="r-corner tr"></div>
+        <div class="r-corner bl"></div><div class="r-corner br"></div>
+        <div class="r-hero-inner">
+          <div class="r-emoji-wrap">
+            <div class="r-emoji-ring-outer"></div>
+            <div class="r-emoji-ring-mid"></div>
+            <div class="r-emoji-ring-inner"></div>
+            <div class="r-emoji-bg">
+              <span class="r-branch-emoji">${b.emoji}</span>
+            </div>
+          </div>
+          <div class="r-branch-name">${b.name}</div>
+          <div class="r-branch-tagline">${b.tagline}</div>
+          <div class="r-trait-row">${b.traits.map(t=>`<span class="r-trait">${t}</span>`).join('')}</div>
+        </div>
+      </div>
+
+      <!-- What you'll do -->
+      <div class="r-card" style="animation-delay:.1s">
+        <div class="r-section-title"><span class="r-stitle-icon">🎯</span>What You'll Do at JIT</div>
+        ${highlightsHTML}
+      </div>
+
+      <!-- DNA -->
+      <div class="r-card" style="animation-delay:.2s">
+        <div class="r-section-title"><span class="r-stitle-icon">🧬</span>Your Engineering DNA</div>
+        ${dnaHTML}
+      </div>
+
+      <!-- Choices -->
+      <div class="r-card" style="animation-delay:.3s">
+        <div class="r-section-title"><span class="r-stitle-icon">📝</span>Your Answers That Led Here</div>
+        ${choicesHTML}
+      </div>
+
+      <!-- Description -->
+      <div class="r-card" style="animation-delay:.4s">
+        <div class="r-section-title"><span class="r-stitle-icon">💡</span>Why ${b.name}?</div>
+        <p class="r-desc-text">${b.desc}</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="r-cta">
+        <div class="r-cta-inner">
+          <div class="r-ct-eyebrow">Take Admission at</div>
+          <div class="r-ct-name">JIT — Jawahar Education Society's<br>Institute of Technology, Management &amp; Research, Nashik</div>
+          <div class="r-ct-divider"></div>
+          <div class="r-ct-addr">📍 Survey No. 48, Near Gangapur Dam, Gangapur Road, Nashik 422 222</div>
+          <div class="r-ct-phone">📞 +91 253 202 0527 &nbsp;|&nbsp; ✉️ jitedunashik1@gmail.com &nbsp;|&nbsp; 🌐 jitnashik.edu.in</div>
+          <div class="r-ct-badges">
+            <span class="r-ct-badge">ISO 21001:2018 Certified</span>
+            <span class="r-ct-badge">NAAC Accredited</span>
+            <span class="r-ct-badge">AICTE Approved</span>
+            <span class="r-ct-badge">Savitribai Phule Pune University</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="r-btn-row">
+        <button class="r-btn-primary" onclick="retake()">✨ Retake the Test</button>
+        <button class="r-btn-outline" onclick="shareResult()">Share My Result</button>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+function retake(){screen='register';document.getElementById('app').style.background='';currentStudent={name:'',email:'',phone:'',city:''};render();}
+function shareResult(){
+  const k=topBranch();const b=BRANCHES[k];
+  const txt=`🎓 The JIT Sorting Hat has spoken!\n\nMy branch: ${b.emoji} ${b.name}\n"${b.tagline}"\n\nFind your engineering destiny at JIT Nashik 👉 jitnashik.edu.in\n\n#JITNashik #EngineeringSortingTest #Admissions2025`;
+  if(navigator.share) navigator.share({title:'My JIT Engineering Destiny',text:txt,url:'https://jitnashik.edu.in'});
+  else navigator.clipboard.writeText(txt).then(()=>alert('Result copied!')).catch(()=>prompt('Copy this:',txt));
+}
+
+function goAdmin(){screen='adminLogin';document.getElementById('app').style.background='';render();}
+
+function renderAdminLogin(root){
+  root.innerHTML=`
+  <div class="screen admin-login-wrap">
+    <div class="admin-card">
+      <div style="font-size:2rem;margin-bottom:.5rem">🎓</div>
+      <div class="admin-title">Admin Panel</div>
+      <div class="admin-sub">JIT Nashik — Sorting Test Data</div>
+      <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="a_user" type="text" placeholder="Admin username" autocomplete="username"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="a_pass" type="password" placeholder="Password" autocomplete="current-password"/><div class="form-error admin-err" id="a_err">Invalid username or password</div></div>
+      <button class="submit-btn" onclick="adminLogin()" style="margin-top:.5rem">Login →</button>
+      <div style="text-align:center;margin-top:1rem"><a href="#" onclick="screen='register';render();return false" style="font-size:.72rem;color:var(--text3);text-decoration:none">← Back to Sorting Test</a></div>
+    </div>
+  </div>`;
+  document.getElementById('a_pass').addEventListener('keydown',e=>{if(e.key==='Enter') adminLogin();});
+}
+
+function adminLogin(){
+  const u=document.getElementById('a_user').value.trim();
+  const p=document.getElementById('a_pass').value;
+  if(u===ADMIN_USER&&p===ADMIN_PASS){adminLoggedIn=true;screen='admin';adminFilter='ALL';adminSearch='';adminData=[];render();loadAdminData();}
+  else{document.getElementById('a_err').classList.add('show');}
+}
+
+async function loadAdminData(){
+  showToast('⏳ Loading data from Google Sheets…','info',8000);
+  const sheetData=await fetchFromSheets();
+  if(sheetData!==null){adminData=sheetData;showToast(`✅ Loaded ${adminData.length} records from Google Sheets`,'ok',4000);}
+  else{adminData=loadLocal().map(r=>({...r,source:'local'}));showToast('⚠️ Could not reach Sheets — showing local data','err',5000);}
+  renderTo(document.getElementById('root'));
+}
+
+function renderAdmin(root){
+  const data=adminData;
+  const filtered=data.filter(r=>{
+    const matchBranch=adminFilter==='ALL'||r.branchCode===adminFilter;
+    const q=adminSearch.toLowerCase();
+    const matchSearch=!q||(r.name||'').toLowerCase().includes(q)||(r.email||'').toLowerCase().includes(q)||(r.phone||'').includes(q)||(r.city||'').toLowerCase().includes(q)||(r.branch||'').toLowerCase().includes(q);
+    return matchBranch&&matchSearch;
+  });
+  const branchCounts={};
+  data.forEach(r=>{branchCounts[r.branchCode]=(branchCounts[r.branchCode]||0)+1;});
+  const topBranchKey=Object.entries(branchCounts).sort((a,b)=>b[1]-a[1])[0];
+  const branchFilters=['ALL',...Object.keys(BRANCHES)];
+  root.innerHTML=`
+  <div class="screen admin-panel">
+    <div class="admin-header-row">
+      <div><div class="admin-panel-title">📊 JIT Sorting Test — Admin Panel</div><div style="font-size:.68rem;color:var(--text3);margin-top:2px">${data.length} total submissions · Live from Google Sheets</div></div>
+      <div class="admin-actions">
+        <button class="btn-refresh" onclick="loadAdminData()">⟳ Refresh</button>
+        <button class="btn-export" onclick="exportExcel()">⬇ Export Excel</button>
+        <button class="btn-logout" onclick="adminLoggedIn=false;screen='adminLogin';render()">Logout</button>
+      </div>
+    </div>
+    <div class="gs-info">📊 <span>Data is pulled live from your <strong>Google Sheet</strong>. Click <strong>Refresh</strong> to load the latest submissions.</span></div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">${data.length}</div><div class="stat-lbl">Total Students</div></div>
+      <div class="stat-box"><div class="stat-num">${Object.keys(branchCounts).length}</div><div class="stat-lbl">Branches Assigned</div></div>
+      <div class="stat-box"><div class="stat-num">${topBranchKey?BRANCHES[topBranchKey[0]]?.emoji+' '+topBranchKey[1]:'-'}</div><div class="stat-lbl">Top Branch</div></div>
+      <div class="stat-box"><div class="stat-num">${[...new Set(data.map(r=>r.city).filter(Boolean))].length}</div><div class="stat-lbl">Cities</div></div>
+    </div>
+    <input class="search-bar" id="admin_search" type="text" placeholder="🔍  Search by name, email, phone, city or branch…" value="${adminSearch}" oninput="adminSearch=this.value;renderTo(document.getElementById('root'))"/>
+    <div class="filter-row">${branchFilters.map(k=>`<button class="filter-btn${adminFilter===k?' active':''}" onclick="adminFilter='${k}';renderTo(document.getElementById('root'))">${k==='ALL'?'All Branches':(BRANCHES[k].emoji+' '+k)}</button>`).join('')}</div>
+    ${filtered.length===0?`<div class="empty-state"><span class="empty-icon">📋</span>${data.length===0?'No submissions yet.':'No results match your search.'}</div>`:`
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Branch Assigned</th><th>Date &amp; Time</th></tr></thead>
+      <tbody>${filtered.map((r,i)=>`<tr><td class="serial-num">${i+1}</td><td><strong style="color:var(--text)">${r.name||'-'}</strong></td><td>${r.email||'-'}</td><td>${r.phone||'-'}</td><td>${r.city||'-'}</td><td><span class="branch-badge">${BRANCHES[r.branchCode]?.emoji||''} ${r.branch||'-'}</span></td><td style="font-size:.68rem;color:var(--text3)">${r.timestamp||'-'}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <div style="font-size:.68rem;color:var(--text3);margin-top:.7rem;text-align:right">Showing ${filtered.length} of ${data.length} records</div>`}
+  </div>`;
+}
+
+function exportExcel(){
+  const data=adminData;
+  if(!data.length){alert('No data to export yet.');return;}
+  const wb=XLSX.utils.book_new();
+  const summaryRows=[['JIT Nashik — Engineering Sorting Test Results'],['Generated on:',new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})],[],['#','Name','Email','Phone','City','Branch Assigned','Branch Code','Date & Time']];
+  data.forEach((r,i)=>{summaryRows.push([i+1,r.name,r.email,r.phone,r.city,r.branch,r.branchCode,r.timestamp]);});
+  const ws1=XLSX.utils.aoa_to_sheet(summaryRows);
+  ws1['!cols']=[{wch:5},{wch:22},{wch:28},{wch:14},{wch:16},{wch:28},{wch:8},{wch:22}];
+  XLSX.utils.book_append_sheet(wb,ws1,'Student Summary');
+  XLSX.writeFile(wb,`JIT_Sorting_Test_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function hatSVG(sz,dark){
+  const fill=dark?'#250902':'#8B1A1A';
+  return `<svg width="${sz}" height="${sz}" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="93" rx="50" ry="11" fill="${dark?'rgba(200,146,42,.1)':'#e8d5d5'}" opacity=".7"/>
+    <path d="M18 88 Q35 68 50 53 Q55 26 60 5 Q65 26 70 53 Q85 68 102 88Z" fill="${fill}"/>
+    <path d="M18 88 Q35 68 50 53 Q55 26 60 5 Q65 26 70 53 Q85 68 102 88Z" fill="url(#hg${sz})" opacity=".3"/>
+    <path d="M14 88 Q60 79 106 88" stroke="#C8922A" stroke-width="3.5" fill="none"/>
+    <path d="M48 53 Q60 48 72 53" stroke="#C8922A" stroke-width="2" fill="none" opacity=".85"/>
+    <circle cx="60" cy="50" r="5" fill="#C8922A"/>
+    <circle cx="60" cy="50" r="9" fill="rgba(200,146,42,.15)"/>
+    <path d="M44 71 Q52 65 60 68 Q68 65 76 71" stroke="#C8922A" stroke-width="1.5" fill="none" opacity=".5"/>
+    <defs><linearGradient id="hg${sz}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C8922A"/><stop offset="100%" stop-color="${fill}"/>
+    </linearGradient></defs>
+  </svg>`;
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Admissions | JIT Nashik</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7a0000",
+                    },
+                    fontFamily: {
+                        body: ["Manrope", "sans-serif"],
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .nav-link-active {
+            background-color: #7a0000;
+            color: white !important;
+        }
+    </style>
+</head>
+
+<body class="bg-white font-body text-stone-800">
+    <!-- Header Placeholder -->
+    <div id="header"></div>
+
+    <main>
+        <!-- PAGE BANNER -->
+        <section class="bg-[#7a0000] py-20 text-center relative overflow-hidden">
+            <div class="max-w-screen-xl mx-auto px-6 relative z-10">
+                <h1 class="text-white text-5xl md:text-6xl font-black uppercase tracking-tight mb-4">Admissions</h1>
+                <div class="flex items-center justify-center gap-2 text-white/80 text-xs font-bold uppercase tracking-widest">
+                    <a href="index.html" class="hover:text-white transition">Home</a>
+                    <i class="fas fa-chevron-right text-[8px]"></i>
+                    <span class="text-white">Admissions</span>
+                </div>
+            </div>
+            <!-- Decorative circle -->
+            <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+        </section>
+
+        <!-- MAIN LAYOUT -->
+        <div class="max-w-screen-xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-4 gap-16">
+            
+            <!-- LEFT SIDEBAR (Quick Links) -->
+            <aside class="lg:col-span-1">
+                <div class="sticky top-24 space-y-8">
+                    <div class="border border-stone-100 shadow-sm rounded-lg overflow-hidden">
+                        <div class="bg-[#7a0000] text-white px-6 py-4 font-black uppercase tracking-wider text-sm">
+                            Admission Menu
+                        </div>
+                        <nav class="flex flex-col">
+                            <a href="admission.html" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 transition-all nav-link-active">Overview</a>
+                            <a href="firstyeareng.html" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 transition-all text-stone-600 hover:bg-stone-50 hover:text-primary">First Year Engineering</a>
+                            <a href="applynow.html" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 transition-all text-stone-600 hover:bg-stone-50 hover:text-primary">Apply Online</a>
+                            <a href="https://cetcell.mahacet.org/" target="_blank" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 transition-all text-stone-600 hover:bg-stone-50 hover:text-primary">Fee Structure</a>
+                            <a href="document.html" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 transition-all text-stone-600 hover:bg-stone-50 hover:text-primary">Required Documents</a>
+                            <a href="https://mahadbt.maharashtra.gov.in/" target="_blank" class="px-6 py-4 text-[13px] font-bold transition-all text-stone-600 hover:bg-stone-50 hover:text-primary">Scholarships</a>
+                        </nav>
+                    </div>
+
+                    <div class="bg-stone-900 text-white p-8 rounded-lg">
+                        <h4 class="font-black uppercase tracking-wider text-sm mb-4">Need Help?</h4>
+                        <p class="text-white/60 text-xs mb-6">Contact our admission cell for any queries regarding the process.</p>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-phone-alt text-primary"></i>
+                                <span class="text-sm font-bold">+91 253 2530000</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-envelope text-primary"></i>
+                                <span class="text-xs">admissions@jit.edu.in</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- RIGHT CONTENT -->
+            <div class="lg:col-span-3 space-y-20">
+                
+                <!-- Overview -->
+                <section>
+                    <h2 class="text-4xl font-black text-stone-900 uppercase tracking-tight mb-8">Forge Your Future</h2>
+                    <p class="text-lg text-stone-500 leading-relaxed max-w-3xl">
+                        Jawahar Education Society's JIT Nashik is where academic excellence meets real-world innovation. Our intake process focuses on identifying merit and nurturing potential in every student.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                        <a href="firstyeareng.html" class="p-8 border border-stone-100 rounded-2xl hover:shadow-xl transition group block">
+                            <div class="w-12 h-12 bg-stone-50 text-primary flex items-center justify-center rounded-lg mb-6 group-hover:bg-[#7a0000] group-hover:text-white transition-all">
+                                <i class="fas fa-graduation-cap text-xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black uppercase mb-4">Undergraduate</h4>
+                            <p class="text-sm text-stone-500 leading-relaxed">BE Bachelor of Engineering in 7 streams. Intake aligned with DTE Maharashtra guidelines.</p>
+                        </a>
+                        <div class="p-8 border border-stone-100 rounded-2xl hover:shadow-xl transition group">
+                            <div class="w-12 h-12 bg-stone-50 text-primary flex items-center justify-center rounded-lg mb-6 group-hover:bg-[#7a0000] group-hover:text-white transition-all">
+                                <i class="fas fa-microchip text-xl"></i>
+                            </div>
+                            <h4 class="text-xl font-black uppercase mb-4">Direct Second Year</h4>
+                            <p class="text-sm text-stone-500 leading-relaxed">Lateral entry for Diploma holders across all engineering departments.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Process Steps -->
+                <section class="bg-stone-50 -mx-6 md:-mx-12 px-6 md:px-12 py-20 rounded-[2rem]">
+                    <div class="max-w-4xl">
+                        <h3 class="text-3xl font-black text-[#7a0000] uppercase tracking-tight mb-12">Admission Process</h3>
+                        <div class="space-y-12 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-[2px] before:bg-stone-200">
+                            <div class="relative pl-16 group">
+                                <div class="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center z-10 group-hover:border-[#7a0000] group-hover:text-[#7a0000] transition-colors font-black">1</div>
+                                <h5 class="text-lg font-black uppercase mb-2">Online Inquiry</h5>
+                                <p class="text-sm text-stone-500">Fill the inquiry form on our website to register your interest and get counseling.</p>
+                            </div>
+                            <div class="relative pl-16 group">
+                                <div class="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center z-10 group-hover:border-[#7a0000] group-hover:text-[#7a0000] transition-colors font-black">2</div>
+                                <h5 class="text-lg font-black uppercase mb-2">Registration</h5>
+                                <p class="text-sm text-stone-500">Official registration through the DTE Maharashtra CAP portal is mandatory for all applicants.</p>
+                            </div>
+                            <div class="relative pl-16 group">
+                                <div class="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center z-10 group-hover:border-[#7a0000] group-hover:text-[#7a0000] transition-colors font-black">3</div>
+                                <h5 class="text-lg font-black uppercase mb-2">Document Verification</h5>
+                                <p class="text-sm text-stone-500">Visit our Facilitation Center (FC) for physical verification of your original documents.</p>
+                            </div>
+                            <div class="relative pl-16 group">
+                                <div class="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center z-10 group-hover:border-[#7a0000] group-hover:text-[#7a0000] transition-colors font-black">4</div>
+                                <h5 class="text-lg font-black uppercase mb-2">Seat Allotment</h5>
+                                <p class="text-sm text-stone-500">Confirm your allotted seat by reporting to the institute and submitting fees.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Eligibility Table -->
+                <section>
+                    <h3 class="text-3xl font-black text-stone-900 uppercase tracking-tight mb-8">Eligibility Criteria</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-stone-50">
+                                    <th class="p-6 text-xs font-black uppercase tracking-widest text-[#7a0000] border-b border-stone-200">Category</th>
+                                    <th class="p-6 text-xs font-black uppercase tracking-widest text-[#7a0000] border-b border-stone-200">Requirements</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                <tr>
+                                    <td class="p-6 font-bold border-b border-stone-50">Open Category</td>
+                                    <td class="p-6 text-stone-500 border-b border-stone-50">45% marks in PCM in Class 12th + Valid CET/JEE Score</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-6 font-bold border-b border-stone-50">Reserved (MH Only)</td>
+                                    <td class="p-6 text-stone-500 border-b border-stone-50">40% marks in PCM in Class 12th + Valid CET/JEE Score</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-6 font-bold">Diploma Holders</td>
+                                    <td class="p-6 text-stone-500">45% marks in Diploma Engineering (40% for Reserved)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer"></div>
+
+    <script src="shared.js"></script>
+</body>
+
+</html>

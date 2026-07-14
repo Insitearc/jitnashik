@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Library | JIT Nashik</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7a0000",
+                    },
+                    fontFamily: {
+                        body: ["Manrope", "sans-serif"],
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-white font-body text-stone-800">
+    <div id="header"></div>
+
+    <main>
+        <!-- PAGE BANNER -->
+        <section class="bg-[#7a0000] py-16 text-center relative overflow-hidden">
+            <div class="max-w-screen-xl mx-auto px-6 relative z-10">
+                <h1 class="text-white text-5xl md:text-6xl font-black uppercase tracking-tight mb-4">Library</h1>
+                <p class="text-white/60 text-xs font-bold uppercase tracking-widest">Knowledge Repository & Learning Space</p>
+            </div>
+        </section>
+
+        <div class="max-w-screen-xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-4 gap-16">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1">
+                <div class="sticky top-24 border border-stone-100 shadow-sm rounded-lg overflow-hidden">
+                    <div class="bg-[#7a0000] text-white px-6 py-4 font-black uppercase tracking-wider text-sm">Facilities</div>
+                    <nav class="flex flex-col">
+                        <a href="library.html" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 bg-[#7a0000] text-white">Library</a>
+                        <a href="labs.html" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 text-stone-600 hover:bg-stone-50 hover:text-primary">Laboratories</a>
+                        <a href="hostel.html" class="px-6 py-4 text-[13px] font-bold border-b border-stone-50 text-stone-600 hover:bg-stone-50 hover:text-primary">Hostel</a>
+                        <a href="campuslife.html" class="px-6 py-4 text-[13px] font-bold text-stone-600 hover:bg-stone-50 hover:text-primary">More Facilities</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <div class="lg:col-span-3 space-y-16">
+                <section>
+                    <h2 class="text-3xl font-black text-stone-900 uppercase tracking-tight mb-8">Central Library</h2>
+                    <div class="flex flex-col md:flex-row gap-10 items-start">
+                        <div class="w-full md:w-1/2 aspect-video bg-stone-100 rounded-2xl overflow-hidden shadow-xl border border-stone-200">
+                             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2m90dESGkZNwKa0upGTEQpVl5OMlEaGrOshUFH4F-19R_Kw4stKDHy9O1W_NPcZV2WLEJlgmuRWYg7pR0sFoox-rUAv931WSnHuNEOhDzOqvrqe4-h_5Ae9sBvUUCi1qoTxGP3VAaq1aB-Ph9mdgO85KRhKIvwrXJGi7kutszfPV_Ebf5HyIp58NNIk3045E3RcKacLZccj_djmZk6CAOBPuNh71kuI7Jeio17xhfQ7_hgvmZTwCZeVSEm60F7Cwmu0VaGgYIBWr9" alt="Library" class="w-full h-full object-cover">
+                        </div>
+                        <div class="space-y-6 flex-1">
+                            <p class="text-lg font-bold text-stone-700 leading-relaxed italic">"The library is the heart of an educational institution."</p>
+                            <p class="text-sm text-stone-500 leading-relaxed">Our central library is a state-of-the-art facility spanning over 500 sqm, housing over 25,000 volumes across various engineering disciplines. It provides a peaceful and high-tech environment for study and research.</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="p-4 bg-stone-50 rounded-lg">
+                                    <p class="text-[10px] text-stone-400 font-bold uppercase mb-1">Volumes</p>
+                                    <p class="text-xl font-black text-primary">25,000+</p>
+                                </div>
+                                <div class="p-4 bg-stone-50 rounded-lg">
+                                    <p class="text-[10px] text-stone-400 font-bold uppercase mb-1">Journals</p>
+                                    <p class="text-xl font-black text-primary">100+</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-8 border border-stone-100 rounded-2xl">
+                        <i class="fas fa-book-reader text-3xl text-primary mb-6"></i>
+                        <h4 class="font-black uppercase text-sm mb-3">Silent Study Zone</h4>
+                        <p class="text-[10px] text-stone-500 leading-relaxed">Dedicated noise-free zones for intensive focus.</p>
+                    </div>
+                    <div class="p-8 border border-stone-100 rounded-2xl">
+                        <i class="fas fa-wifi text-3xl text-primary mb-6"></i>
+                        <h4 class="font-black uppercase text-sm mb-3">E-Resource Center</h4>
+                        <p class="text-[10px] text-stone-500 leading-relaxed">High-speed terminals to access IEEE, Springer journals.</p>
+                    </div>
+                    <div class="p-8 border border-stone-100 rounded-2xl">
+                        <i class="fas fa-clock text-3xl text-primary mb-6"></i>
+                        <h4 class="font-black uppercase text-sm mb-3">Extended Hours</h4>
+                        <p class="text-[10px] text-stone-500 leading-relaxed">Open from 8 AM to 8 PM for student convenience.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+    <script src="shared.js"></script>
+</body>
+
+</html>

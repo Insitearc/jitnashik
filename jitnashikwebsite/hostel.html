@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Hostel & Residential Life | JIT Nashik</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7a0000",
+                    },
+                    fontFamily: {
+                        body: ["Manrope", "sans-serif"],
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-white font-body text-stone-800">
+    <div id="header"></div>
+
+    <main>
+        <!-- PAGE BANNER -->
+        <section class="bg-[#7a0000] py-20 text-center relative overflow-hidden">
+            <div class="max-w-screen-xl mx-auto px-6 relative z-10">
+                <h1 class="text-white text-5xl md:text-6xl font-black uppercase tracking-tight mb-4">Residential Life</h1>
+                <p class="text-white/60 text-xs font-bold uppercase tracking-widest">A home away from home on campus</p>
+            </div>
+            <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+        </section>
+
+        <!-- INTRO -->
+        <section class="py-24">
+            <div class="max-w-screen-xl mx-auto px-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+                    <div>
+                        <h2 class="text-4xl font-black text-stone-900 uppercase tracking-tight mb-8">Comfort Meets Community</h2>
+                        <p class="text-lg text-stone-500 leading-relaxed mb-12 text-justify">
+                            At JIT Nashik, we understand that a comfortable living environment is crucial for academic success. Our on-campus hostel facilities are designed to provide students with a secure, hygienic, and vibrant community experience that fosters lifelong friendships and personal growth.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-venus text-primary text-xl"></i>
+                                <span class="text-sm font-bold uppercase tracking-widest">Separate Boys/Girls Hostels</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-shield-alt text-primary text-xl"></i>
+                                <span class="text-sm font-bold uppercase tracking-widest">24/7 Enhanced Security</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-wifi text-primary text-xl"></i>
+                                <span class="text-sm font-bold uppercase tracking-widest">Campus-Wide Wi-Fi</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-utensils text-primary text-xl"></i>
+                                <span class="text-sm font-bold uppercase tracking-widest">Nutritious Veg Diet</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-xl border border-stone-100">
+                             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2m90dESGkZNwKa0upGTEQpVl5OMlEaGrOshUFH4F-19R_Kw4stKDHy9O1W_NPcZV2WLEJlgmuRWYg7pR0sFoox-rUAv931WSnHuNEOhDzOqvrqe4-h_5Ae9sBvUUCi1qoTxGP3VAaq1aB-Ph9mdgO85KRhKIvwrXJGi7kutszfPV_Ebf5HyIp58NNIk3045E3RcKacLZccj_djmZk6CAOBPuNh71kuI7Jeio17xhfQ7_hgvmZTwCZeVSEm60F7Cwmu0VaGgYIBWr9" alt="Hostel Room" class="w-full h-full object-cover">
+                        </div>
+                        <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-xl border border-stone-100 mt-12">
+                             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB17SWYbX3_oggpwrx-7PMPfMolL25ZgZ-7dQez38Way7ntLgZtRxXOMSmWmeZ_md7ucRLRbwsyFNFXzigFW7zdeoBi5z3DnZcanRJUyWO_WJSL6qsCQKcCI5azTHksO4zkIDu4UJoCESOm8_6a9ookCr8qwU4P5Q5DZtL14Hn9yVHO9KbtJUIttsp6S4OYp7zSSRkEZeyhjoZ7pvsGmEbZgfCgYquRCSTvkyfwQMsBKySTdka3zIGG1fEH2REvkyG_vz462pQKHnLU" alt="Dining Hall" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOSTEL TABS / FEATURES -->
+                <div class="bg-stone-50 p-12 rounded-[2rem] border border-stone-100">
+                    <h3 class="text-2xl font-black text-stone-900 uppercase tracking-tight mb-12 text-center">Standard Amenities</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        <!-- Amenity -->
+                        <div class="text-center group">
+                            <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-stone-100 mx-auto flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mb-6">
+                                <i class="fas fa-bed text-2xl"></i>
+                            </div>
+                            <h5 class="font-black text-xs uppercase tracking-widest mb-2">Spacious Rooms</h5>
+                            <p class="text-[9px] text-stone-500 leading-relaxed">2 & 3 sharing options with premium bedding.</p>
+                        </div>
+                        <!-- Amenity -->
+                        <div class="text-center group">
+                            <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-stone-100 mx-auto flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mb-6">
+                                <i class="fas fa-dumbbell text-2xl"></i>
+                            </div>
+                            <h5 class="font-black text-xs uppercase tracking-widest mb-2">In-House Gym</h5>
+                            <p class="text-[9px] text-stone-500 leading-relaxed">Modern fitness equipment for health awareness.</p>
+                        </div>
+                        <!-- Amenity -->
+                        <div class="text-center group">
+                            <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-stone-100 mx-auto flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mb-6">
+                                <i class="fas fa-tshirt text-2xl"></i>
+                            </div>
+                            <h5 class="font-black text-xs uppercase tracking-widest mb-2">Laundry Service</h5>
+                            <p class="text-[9px] text-stone-500 leading-relaxed">Professional laundry and ironing facilities.</p>
+                        </div>
+                        <!-- Amenity -->
+                        <div class="text-center group">
+                            <div class="w-16 h-16 bg-white rounded-2xl shadow-sm border border-stone-100 mx-auto flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mb-6">
+                                <i class="fas fa-tv text-2xl"></i>
+                            </div>
+                            <h5 class="font-black text-xs uppercase tracking-widest mb-2">Recreation Area</h5>
+                            <p class="text-[9px] text-stone-500 leading-relaxed">TV room, Table Tennis, and indoor games.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RULES SECTION -->
+        <section class="py-24 bg-stone-900 text-white relative overflow-hidden">
+            <div class="max-w-screen-xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+                <div>
+                    <h3 class="text-3xl font-black uppercase tracking-tight mb-8">Security & Discipline</h3>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4 items-start">
+                            <div class="w-10 h-10 rounded-full bg-[#7a0000] flex items-center justify-center shrink-0">
+                                <i class="fas fa-lock text-sm"></i>
+                            </div>
+                            <div>
+                                <h6 class="font-black uppercase text-sm mb-1">CCTV Monitoring</h6>
+                                <p class="text-white/50 text-[10px] leading-relaxed">Round-the-clock surveillance across all corridors and common areas.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4 items-start">
+                            <div class="w-10 h-10 rounded-full bg-[#7a0000] flex items-center justify-center shrink-0">
+                                <i class="fas fa-user-shield text-sm"></i>
+                            </div>
+                            <div>
+                                <h6 class="font-black uppercase text-sm mb-1">On-Site Wardens</h6>
+                                <p class="text-white/50 text-[10px] leading-relaxed">Dedicated faculty wardens for grievance redressal and mentorship.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Mini Table for Rates/Capacity -->
+                <div class="bg-white/5 backdrop-blur-md p-10 rounded-3xl border border-white/10">
+                    <h4 class="font-black uppercase tracking-widest text-sm mb-8 text-primary">Inquiry Summary</h4>
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                            <span class="text-xs uppercase tracking-widest text-white/60">Boys Capacity</span>
+                            <span class="font-black text-lg">250 Seats</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                            <span class="text-xs uppercase tracking-widest text-white/60">Girls Capacity</span>
+                            <span class="font-black text-lg">150 Seats</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs uppercase tracking-widest text-white/60">Annual Charges</span>
+                            <span class="font-black text-lg">Contact Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-[#7a0000]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+    <script src="shared.js"></script>
+</body>
+
+</html>
